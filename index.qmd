@@ -1,5 +1,21 @@
 ---
-title: "lucianbluescher.github.io"
+#title: "Lucian Blue Scher"
+image: Lucian_Scher_MEDS_Headshots 2026_0016.jpg
+about: 
+  template: jolla
+  image-shape: rounded
+  image-width: 17em
+  links: 
+    - text: LinkedIn
+      href: https://www.linkedin.com/in/lucianbluescher
+      target: _blank
+    - text: GitHub
+      href: https://github.com/lucianbluescher
+      target: _blank
+    - text: Email
+      href: mailto:lucian@ucsb.edu
+      target: _blank
+    
 ---
 
-Hi this is Lucian!
+Hello! Welcome to my site, my name is Lucian (pronounced "loo-shin")
