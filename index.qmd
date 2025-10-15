@@ -1,18 +1,21 @@
 ---
-#title: "Lucian Blue Scher"
-image: Lucian_Scher_MEDS_Headshots 2026_0016.jpg
+title: "Lucian Blue Scher"
+image: images/IMG_0567.jpeg
 about: 
-  template: trestles
+  template: jolla
   image-shape: rounded
   image-width: 17em
   links: 
     - text: LinkedIn
+      icon: linkedin
       href: https://www.linkedin.com/in/lucianbluescher
       target: _blank
     - text: GitHub
+      icon: github
       href: https://github.com/lucianbluescher
       target: _blank
     - text: Email
+      icon: envelope
       href: mailto:lucian@ucsb.edu
       target: _blank
     
