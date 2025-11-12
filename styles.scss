@@ -1,0 +1,53 @@
+/*-- scss:defaults --*/
+
+// import google fonts
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&display=swap');
+
+//fonts
+$Oswald: "Oswald", sans-serif;
+
+// colors
+$primary-green: #2B7A78;
+$secondary-blue: #3A4750;
+$accent-teal: #4CC9F0;
+$background-light: #F4F6F7;
+$text-dark: #17252A;
+$text-medium: #A9A9A9;
+$status-success: #6EEB8D;
+$status-warning: #FFC300;
+$status-error: #C1121F;
+$chart-sky: #A9D6E5;
+
+// define quarto variables
+$body-bg: $primary-green;
+$navbar-bg: $background-light;
+$navbar-fg: $accent-teal;
+$navbar-hl: $text-dark;
+$link-color: $text-dark;
+
+/*-- scss:rules --*/
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $Oswald;
+}
+
+go.navbar-brand img { 
+  max-height: 40px;
+  width: auto;
+}
+/*h1, h2 {
+  letter-spacing: 5px;
+  font_weight: 700;
+}
+
+.title {
+  color: maroon;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.orange-text {
+  color: orange;
+} */

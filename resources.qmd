@@ -3,3 +3,24 @@ title: "Resources"
 format: html
 ---
 
+<!-- <h1> This is a list of all my favorite resources! </h1> -->
+
+<!-- <h1 class="title"> THis is an h1 element with the title class! </h1> -->
+
+<!-- <p class="orange-text">this paragraph is orange<p/> -->
+
+<!-- <p class="center-text">this text is centered </p> -->
+
+<!-- <p class="center-text orange-text">this text is both centered and orange </p> -->
+
+<!-- --- -->
+
+<!-- Here's where I'm describing [something fun]{.orange-text} that I enjoy doing. -->
+
+<!-- [Here's a full line]{.orange-text} -->
+
+<!-- ::: {.orange-text} -->
+<!-- Here's one line -->
+
+<!-- Here's another line -->
+<!-- ::: -->
