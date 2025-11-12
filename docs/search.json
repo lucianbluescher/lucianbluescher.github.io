@@ -33,5 +33,33 @@
     "title": "Resources",
     "section": "",
     "text": "This is a list of all my favorite resources!\n\n\nTHis is an h1 element with the title class!\n\n\nthis paragraph is orange\n\n\nthis text is centered\n\n\nthis text is both centered and orange\n\n\nHere’s where I’m describing something fun that I enjoy doing.\nHere’s a full line\n\nHere’s one line\nHere’s another line"
+  },
+  {
+    "objectID": "Lucians_log.html",
+    "href": "Lucians_log.html",
+    "title": "Lucians_log",
+    "section": "",
+    "text": "No matching items"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Lucian’s log",
+    "section": "",
+    "text": "My first blog Post\n\n\n\nMEDS\n\n\nR\n\n\n\nA short description of this blog post\n\n\n\nLucian Blue Scher\n\n\nNov 12, 2025\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/my-first-blog-post/index.html",
+    "href": "posts/my-first-blog-post/index.html",
+    "title": "My first blog Post",
+    "section": "",
+    "text": "This is where the body of my blog post begins!1. You can also add an inline footnote2.\nHere is a citation to Sam(Shanny-Csik 2022)\nLets cite a paper using its DOI (Boles, Garven, and Peltonen 2023)"
+  },
+  {
+    "objectID": "posts/my-first-blog-post/index.html#footnotes",
+    "href": "posts/my-first-blog-post/index.html#footnotes",
+    "title": "My first blog Post",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThis is a footnote↩︎\nheeres my inline footnote↩︎"
   }
 ]

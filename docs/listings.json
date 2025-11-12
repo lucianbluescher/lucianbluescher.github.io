@@ -1,0 +1,12 @@
+[
+  {
+    "listing": "/Lucians_log.html",
+    "items": []
+  },
+  {
+    "listing": "/posts.html",
+    "items": [
+      "/posts/my-first-blog-post/index.html"
+    ]
+  }
+]

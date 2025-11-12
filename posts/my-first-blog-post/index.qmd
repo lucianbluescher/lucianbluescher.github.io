@@ -1,0 +1,27 @@
+---
+title: "My first blog Post"
+description: "A short description of this blog post"
+author: 
+  - name: Lucian Blue Scher
+    url: https://lucianbluescher.github.io
+    affiliation: Master of Environmental Data Science Program @ The Bren School (UCSB) 
+    affiliation-url: https://ucsb-meds.github.io/ 
+date: 2025-11-12
+categories: [MEDS, R]
+# imgage: blahblahblah.png
+citation:
+  url: https://lucianbluescher.github.io/posts/my-first-blog-post
+bibliography: references.bib
+draft: true
+#draft-mode: linked
+---
+
+This is where the body of my blog post begins![^1]. You can also add an inline footnote[^2].
+
+[^1]: This is a footnote
+
+[^2]: heeres my inline footnote
+
+Here is a citation to Sam[@shanny-csik2022]
+
+Lets cite a paper using its DOI [@boles2023]

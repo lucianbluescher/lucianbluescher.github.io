@@ -1,6 +1,6 @@
 ---
 title: "Lucian Blue Scher"
-image: images/IMG_0567.jpeg
+image: images/quarIMG_0567.jpeg
 about: 
   template: jolla
   image-shape: rounded

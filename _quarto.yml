@@ -12,7 +12,10 @@ website:
     right:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: About
+      - href: posts.qmd
+        text: "Lucian's Log"
       # - href: resources.qmd
       #   text: Resources
       - icon: github
