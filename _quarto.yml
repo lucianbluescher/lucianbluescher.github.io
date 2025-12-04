@@ -1,14 +1,14 @@
 project:
-  type: website
-  output-dir: docs
+  type: website        # Build a Quarto website
+  output-dir: docs     # Publish into docs/ for GitHub Pages
 
 website:
-  title: "Lucian Blue Scher"
-  # favicon: images/favicon.png
+  title: "Lucian Blue Scher"  # Browser/tab title
+  favicon: images/lucian-headshot.jng  # Icon shown in the tab
   navbar:
-    logo: /images/
-    #logo-alt: The name lucian scher with a logo image
-    title: false
+    logo: /images/lucian-headshot.jng  # Image next to your name in the nav bar
+    logo-alt: "Lucian Blue Scher" # Accessible text for the logo
+    title: false                      # Hide duplicate text title (logo covers it)
     right:
       - href: index.qmd
         text: Home
@@ -21,16 +21,14 @@ website:
       - icon: github
         href: https://github.com/lucianbluescher
   page-footer:
-    left: Copyright 2025, Lucian Scher
-
-      
+    left: "Copyright 2025, Lucian Scher"
 
 format:
   html:
-    theme: styles.scss
-    toc: true
-    page-layout: full
-    mainfont: Oswald
+    theme: styles.scss  # Custom SCSS theme
+    toc: true           # Show a TOC on pages
+    page-layout: full   # Full-width layout
+    mainfont: Oswald    # Body font
 
 
 

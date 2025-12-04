@@ -1,6 +1,7 @@
 ---
 title: "Lucian Blue Scher"
-image: images/quarIMG_0567.jpeg
+description: "Environmental data scientist with the Bren school at UCSB"
+image: images/IMG_0567.jpeg
 about: 
   template: jolla
   image-shape: rounded
@@ -18,7 +19,6 @@ about:
       icon: envelope
       href: mailto:lucian@ucsb.edu
       target: _blank
-    
 ---
 
 Hello! Welcome to my site, my name is Lucian (pronounced "loo-shin")

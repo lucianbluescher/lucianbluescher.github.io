@@ -1,53 +1,82 @@
 /*-- scss:defaults --*/
 
-// import google fonts
+/* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&display=swap');
 
-//fonts
+/* Typography */
 $Oswald: "Oswald", sans-serif;
 
-// colors
-$primary-green: #2B7A78;
-$secondary-blue: #3A4750;
-$accent-teal: #4CC9F0;
-$background-light: #F4F6F7;
-$text-dark: #17252A;
-$text-medium: #A9A9A9;
+/* Palette – Indigo + Midnight + Mist */
+$indigo-core: #433878;      // primary accent
+$midnight-slate: #1F2A37;   // dark background / text
+$mist-blue: #8FB4FF;        // light accents
+$lavender-haze: #D7C9FF;    // secondary highlight
+$soft-cream: #F7F4EE;       // page background
+$fog-gray: #B1B3C7;         // muted text
 $status-success: #6EEB8D;
 $status-warning: #FFC300;
-$status-error: #C1121F;
-$chart-sky: #A9D6E5;
+$status-error: #E4572E;
 
-// define quarto variables
-$body-bg: $primary-green;
-$navbar-bg: $background-light;
-$navbar-fg: $accent-teal;
-$navbar-hl: $text-dark;
-$link-color: $text-dark;
+/* Quarto variables */
+$body-bg: $soft-cream;
+$body-color: $midnight-slate;
+$navbar-bg: $midnight-slate;
+$navbar-fg: $soft-cream;
+$navbar-hl: $mist-blue;
+$link-color: $indigo-core;
+$link-hover-color: $lavender-haze;
+$code-bg: rgba($lavender-haze, 0.2);
 
 /*-- scss:rules --*/
 
+body {
+  font-family: "Noto Serif", serif;
+  background: $body-bg;
+  color: $body-color;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: $Oswald;
+  color: $indigo-core;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-go.navbar-brand img { 
-  max-height: 40px;
-  width: auto;
-}
-/*h1, h2 {
-  letter-spacing: 5px;
-  font_weight: 700;
+.navbar {
+  box-shadow: 0 2px 8px rgba($midnight-slate, 0.35);
 }
 
-.title {
-  color: maroon;
+.navbar a.nav-link,
+.navbar-brand,
+.navbar-brand:visited {
+  color: $navbar-fg !important;
 }
 
-.center-text {
-  text-align: center;
+.navbar a.nav-link:hover,
+.navbar-brand:hover {
+  color: $navbar-hl !important;
 }
 
-.orange-text {
-  color: orange;
-} */
+main a {
+  color: $link-color;
+  text-decoration-color: rgba($link-color, 0.3);
+  text-decoration-thickness: 0.12em;
+}
+
+main a:hover {
+  color: $link-hover-color;
+  text-decoration-color: rgba($link-hover-color, 0.8);
+}
+
+code, pre {
+  border-radius: 6px;
+  background: $code-bg;
+  padding: 0.15rem 0.35rem;
+}
+
+blockquote {
+  border-left: 4px solid $indigo-core;
+  background: rgba($indigo-core, 0.05);
+  padding: 1rem 1.25rem;
+  color: $midnight-slate;
+}
