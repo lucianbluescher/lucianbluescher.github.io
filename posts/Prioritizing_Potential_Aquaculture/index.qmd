@@ -57,13 +57,13 @@ library(sf)
 library(rnaturalearth)
 
 # Load and prepare data
-depth <- rast("data/depth.tif")
-eez <- st_read("data/wc_regions_clean.shp", quiet = TRUE)
-sst <- c(rast("data/average_annual_sst_2012.tif"),
-         rast("data/average_annual_sst_2011.tif"),
-         rast("data/average_annual_sst_2010.tif"),
-         rast("data/average_annual_sst_2009.tif"),
-         rast("data/average_annual_sst_2008.tif"))
+depth <- rast("posts/Prioritizing_Potential_Aquaculture/data/depth.tif")
+eez <- st_read("posts/Prioritizing_Potential_Aquaculture/data/wc_regions_clean.shp", quiet = TRUE)
+sst <- c(rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2012.tif"),
+         rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2011.tif"),
+         rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2010.tif"),
+         rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2009.tif"),
+         rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2008.tif"))
 
 # Ensure CRS alignment
 if (crs(eez) != crs(sst)) {
