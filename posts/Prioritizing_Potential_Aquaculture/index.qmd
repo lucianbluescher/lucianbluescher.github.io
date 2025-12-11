@@ -1,7 +1,12 @@
 ---
-title: "Finding the Best Waters: Mapping Aquaculture Potential Along the U.S. West Coast"
-author: "Lucian Scher"
-date: 2025-11-26
+title: "Finding the Best Waters"
+description: "Mapping Aquaculture Potential Along the U.S. West Coast"
+author: 
+  - name: Lucian Blue Scher
+    url: https://lucianbluescher.github.io
+    affiliation: Master of Environmental Data Science Program @ The Bren School (UCSB) 
+    affiliation-url: https://ucsb-meds.github.io/ 
+date: 12-12-2025
 format:
   html:
     toc: true
@@ -10,10 +15,13 @@ format:
     code-fold: true
     code-summary: "Show code"
 categories: [Aquaculture, Marine Science, Geospatial, MEDS, R]
-image: "images/clipboard-3215522662.png"
+image: images/clipboard-754817526.png
 editor_options: 
   chunk_output_type: inline
 ---
+
+![](images/clipboard-754817526.png)
+Image Credits: (Jane March, The Road Ahead for Sustainable Aquaculture)[https://earth.org/sustainable-aquaculture/]
 
 ## The Challenge: Where Should We Farm the Ocean?
 
@@ -59,13 +67,17 @@ library(sf)
 library(rnaturalearth)
 
 # Load and prepare data
-depth <- rast("posts/Prioritizing_Potential_Aquaculture/data/depth.tif")
-eez <- st_read("posts/Prioritizing_Potential_Aquaculture/data/wc_regions_clean.shp", quiet = TRUE)
-sst <- c(rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2012.tif"),
-         rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2011.tif"),
-         rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2010.tif"),
-         rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2009.tif"),
-         rast("posts/Prioritizing_Potential_Aquaculture/data/average_annual_sst_2008.tif"))
+depth <- rast(here::here("posts", "Prioritizing_Potential_Aquaculture", "data", "depth.tif"))
+
+eez <- st_read(here::here("posts", "Prioritizing_Potential_Aquaculture", "data", "wc_regions_clean.shp"), quiet = TRUE)
+
+sst <- c(
+  rast(here::here("posts", "Prioritizing_Potential_Aquaculture", "data", "average_annual_sst_2012.tif")),
+  rast(here::here("posts", "Prioritizing_Potential_Aquaculture", "data", "average_annual_sst_2011.tif")),
+  rast(here::here("posts", "Prioritizing_Potential_Aquaculture", "data", "average_annual_sst_2010.tif")),
+  rast(here::here("posts", "Prioritizing_Potential_Aquaculture", "data", "average_annual_sst_2009.tif")),
+  rast(here::here("posts", "Prioritizing_Potential_Aquaculture", "data", "average_annual_sst_2008.tif"))
+)
 
 # Ensure CRS alignment
 if (crs(eez) != crs(sst)) {
@@ -87,7 +99,7 @@ depth_resampled <- depth |>
 The analysis follows a systematic workflow that identifies suitable aquaculture locations. Let's break it down step by step using the Rock scallop (*Crassedoma giganteum*) as an example. The Rock scallop prefers temperate water temperatures of about **13–22°C** and shallower waters down to **45 meters**.
 
 1.  **Define species requirements**: Set suitable sea surface temperature (°C) and depth ranges (m). Then identify the input layers (SST rasters, depth rasters, EEZ polygons). This anchors all further processing to the species’ physiological needs.
-  
+
 ```{r}
 species_name <- "Rock scallop"
 sst_min <- 13; sst_max <- 22      # acceptable SST in °C
@@ -113,7 +125,6 @@ sst_bin   <- classify(sst_data, rcl = sst_rcl)
 depth_bin <- classify(depth_data, rcl = depth_rcl)
 depth_stack <- rep(depth_bin, nlyr(sst_bin))  # match layers
 ```
-
 
 3.  **Overlay analysis**: Combine the SST and depth masks to keep only cells that satisfy *both* criteria. The product of the two binary layers identifies candidate habitat cells.
 
@@ -171,6 +182,7 @@ tm_shape(land_cropped) +
 **Key Finding**: Due to the Rock scallops warmer temperature preference, Southern California is shown to have the most suitable area for Rock scallop aquaculture.
 
 ## Creating a Function
+
 That workflow works great for identifying suitable aquaculture locations for an individual species, but it takes a lot of code. By combining each step into a function, additional species can be analyzed in one line of code, determining their most suitable zone quickly to aid in site selection. Included here is the function code that replaces the first step with suitability parameters and a [Roxygen](https://roxygen2.r-lib.org/) skeleton to provide function documentation.
 
 ```{r}
@@ -274,7 +286,8 @@ map_species_suitability <- function(species_name,
 ```
 
 ## Results
-Function testing on three different species. 
+
+Function testing on three different species.
 
 ### Case Study 1: Oysters (General)
 
@@ -361,5 +374,4 @@ SeaLifeBase. (2024). *Ostrea lurida* (Olympia oyster). https://www.sealifebase.c
 
 SeaLifeBase. (2024). *Haliotis rufescens* (Red abalone). https://www.sealifebase.ca/summary/Haliotis-rufescens.html
 
-Sealifebase. (2025). *Crassedoma giganteum* (Rock scallop).  https://www.sealifebase.ca/summary/Crassedoma-giganteum.html
-
+Sealifebase. (2025). *Crassedoma giganteum* (Rock scallop). https://www.sealifebase.ca/summary/Crassedoma-giganteum.html
