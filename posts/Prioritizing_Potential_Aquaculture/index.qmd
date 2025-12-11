@@ -11,6 +11,8 @@ format:
     code-summary: "Show code"
 categories: [Aquaculture, Marine Science, Geospatial, MEDS, R]
 image: "images/clipboard-3215522662.png"
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ## The Challenge: Where Should We Farm the Ocean?
@@ -19,7 +21,7 @@ As global demand for seafood continues to rise, aquaculture—the farming of aqu
 
 **This analysis addresses a key question: Which U.S. West Coast Exclusive Economic Zone (EEZ) offers the most suitable habitat for commercially important shellfish species?**
 
-By combining sea surface temperature data, ocean depth measurements, and EEZ boundaries, we can pinpoint the regions where aquaculture operations would have the greatest chance of success.
+By combining sea surface temperature data, ocean depth measurements, and exclusive economic zone boundaries (EEZ), we can pinpoint the regions where aquaculture operations would have the greatest chance of success.
 
 ## Why This Matters
 
@@ -82,18 +84,116 @@ depth_resampled <- depth |>
 
 ## The Approach: Habitat Suitability Modeling
 
-The analysis follows a systematic workflow to identify suitable aquaculture locations:
+The analysis follows a systematic workflow that identifies suitable aquaculture locations. Let's break it down step by step using the Rock scallop (*Crassedoma giganteum*) as an example. The Rock scallop prefers temperate water temperatures of about **13–22°C** and shallower waters down to **45 meters**.
 
-1.  **Define species requirements**: Establish acceptable ranges for sea surface temperature (°C) and depth (m)
-2.  **Reclassify environmental layers**: Convert continuous SST and depth data into binary suitability maps (1 = suitable, 0 = unsuitable)
-3.  **Overlay analysis**: Combine layers to identify areas meeting *all* criteria
-4.  **Zonal statistics**: Calculate total suitable area within each EEZ region
-5.  **Visualization**: Map results to compare regional suitability
+1.  **Define species requirements**: Set suitable sea surface temperature (°C) and depth ranges (m). Then identify the input layers (SST rasters, depth rasters, EEZ polygons). This anchors all further processing to the species’ physiological needs.
+  
+```{r}
+species_name <- "Rock scallop"
+sst_min <- 13; sst_max <- 22      # acceptable SST in °C
+depth_min <- -45; depth_max <- 0 # acceptable depth in m
+sst_data <- mean_sst               # sea surface temperature raster
+depth_data <- depth_resampled      # depth raster
+eez_data <- eez                    # EEZ polygons
+```
+
+2.  **Reclassify environmental layers**: Use reclassification matrices to convert continuous SST and depth into binary masks: values inside the acceptable range get a 1 (suitable) and everything else a 0 (unsuitable). For SST, the matrix maps anything below sst_min or above sst_max to 0, and values between to 1; for depth, the matrix does the same with depth_min and depth_max. Calling classify() with these matrices produces yes/no suitability rasters.
 
 ```{r}
-#| label: suitability-function
-#| echo: false
+sst_rcl <- matrix(c(-Inf, sst_min, 0,
+                    sst_min, sst_max, 1,
+                    sst_max, Inf, 0),
+                  ncol = 3, byrow = TRUE)
+depth_rcl <- matrix(c(-Inf, depth_min, 0,
+                      depth_min, depth_max, 1,
+                      depth_max, Inf, 0),
+                    ncol = 3, byrow = TRUE)
 
+sst_bin   <- classify(sst_data, rcl = sst_rcl)
+depth_bin <- classify(depth_data, rcl = depth_rcl)
+depth_stack <- rep(depth_bin, nlyr(sst_bin))  # match layers
+```
+
+
+3.  **Overlay analysis**: Combine the SST and depth masks to keep only cells that satisfy *both* criteria. The product of the two binary layers identifies candidate habitat cells.
+
+```{r}
+suitable_cells <- lapp(c(sst_bin, depth_stack),
+                       fun = function(sst, depth) sst * depth)
+```
+
+4.  **Zonal statistics**: Quantify suitable area by EEZ. Align projections, mask suitability to EEZ boundaries, convert EEZ polygons to a raster of IDs, multiply suitability by cell area (km²), and sum within each zone. This produces a ranked table of suitable area per EEZ, turning raster cells of suitability into regional metrics that we can visualize.
+
+```{r}
+eez_data <- st_transform(eez_data, crs(suitable_cells))
+suitable_masked <- mask(suitable_cells, vect(eez_data))
+eez_rast <- rasterize(vect(eez_data), suitable_masked[[1]], field = "rgn")
+cell_area <- cellSize(suitable_masked, unit = "km")
+suitable_area_rast <- suitable_masked * cell_area
+total_area_per_eez <- zonal(suitable_area_rast, eez_rast, fun = "sum", na.rm = TRUE)
+colnames(total_area_per_eez) <- c("Region", "Suitable Area (km2)")
+ranked_eez <- total_area_per_eez[order(-total_area_per_eez$"Suitable Area (km2)"), ]
+```
+
+5.  **Visualization**: Join the computed suitable area back to the EEZ polygons and map the results. The map shades EEZs by suitable area (km²), adds basemap context, and labels regions for clear regional comparison of habitat suitability.
+
+```{r}
+#| label: Rock-scallop
+#| fig-cap: "Suitability for Rock scallop aquaculture across West Coast EEZs. Southern California is the most suitable region for this species."
+#| warning: false
+#| message: false
+
+eez_data$"Suitable Area (km2)" <- setNames(ranked_eez$"Suitable Area (km2)",
+                                           ranked_eez$Region)[eez_data$rgn]
+
+land <- ne_countries(scale = "medium", returnclass = "sf")
+eez_bbox <- st_bbox(eez_data)
+eez_bbox[c("xmin", "ymin")] <- eez_bbox[c("xmin", "ymin")] - 2
+eez_bbox[c("xmax", "ymax")] <- eez_bbox[c("xmax", "ymax")] + 2
+land_cropped <- st_crop(land, eez_bbox)
+
+tm_shape(land_cropped) +
+  tm_polygons(fill = "lightgray", col = "black", lwd = 1) +
+  tm_shape(eez_data) +
+  tm_polygons(fill = "Suitable Area (km2)",
+              fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
+              fill.legend = tm_legend(title = "Suitable Area (km²)"),
+              col = "black", lwd = 0.5) +
+  tm_text("rgn", size = 0.4, col = "black", fontface = "bold",
+          remove.overlap = TRUE, auto.placement = TRUE) +
+  tm_title(text = paste("Suitable Aquaculture Habitat:", species_name),
+           size = 0.7, fontface = "bold") +
+  tm_scalebar(position = c("left", "bottom")) +
+  tm_compass(position = c("right", "top")) +
+  tm_layout(legend.outside = TRUE, legend.outside.position = "right")
+```
+
+**Key Finding**: Due to the Rock scallops warmer temperature preference, Southern California is shown to have the most suitable area for Rock scallop aquaculture.
+
+## Creating a Function
+That workflow works great for identifying suitable aquaculture locations for an individual species, but it takes a lot of code. By combining each step into a function, additional species can be analyzed in one line of code, determining their most suitable zone quickly to aid in site selection. Included here is the function code that replaces the first step with suitability parameters and a [Roxygen](https://roxygen2.r-lib.org/) skeleton to provide function documentation.
+
+```{r}
+#' @title Mapping Potential Aquaculture for species in West Coast Exclusive Economic Zones
+#' @author Lucian Scher
+#' @param species_name Name of species (Scientific or Common)
+#' @param sst_min Minimum of temperature range (Degrees Celsius)
+#' @param sst_max Maximum of temperature range (Degrees Celsius)
+#' @param depth_min Minimum of depth range negative for underwater (Meters)
+#' @param depth_max Maximum of depth range 0 for sea-level (Meters)
+#' *Optional Parameters:* to update SST, depth or EEZ data in case of changes: 
+#' Default is data used this repository. 
+#' Will need to re-prepare and re-process if neccessary to change these.
+#' @param sst_data Sea Surface Temperature Data
+#' @param depth_data Bathymetry data
+#' @param eez_data Exclusive Economic Zones
+#'
+#' @returns Map of EEZ regions colored by amount of suitable area for given species 
+#' (species name included in map title)
+
+#| label: suitability-function
+
+# 1.  Define species requirements
 map_species_suitability <- function(species_name, 
                                      sst_min, sst_max, 
                                      depth_min, depth_max,
@@ -101,7 +201,8 @@ map_species_suitability <- function(species_name,
                                      depth_data = depth_resampled,
                                      eez_data = eez) {
   
-  # Create reclassification matrices
+# 2.  Reclassify environmental layers
+  
   sst_rcl <- matrix(c(-Inf, sst_min, 0, sst_min, sst_max, 1, sst_max, Inf, 0), 
                     ncol = 3, byrow = TRUE)
   depth_rcl <- matrix(c(-Inf, depth_min, 0, depth_min, depth_max, 1, depth_max, Inf, 0), 
@@ -112,32 +213,46 @@ map_species_suitability <- function(species_name,
   depth_bin <- classify(depth_data, rcl = depth_rcl)
   depth_stack <- rep(depth_bin, nlyr(sst_bin))
   
+# 3.  Overlay analysis
   # Identify suitable cells
   suitable_cells <- lapp(c(sst_bin, depth_stack), 
                          fun = function(sst, depth) sst * depth)
   
-  # Calculate suitable area per EEZ
+# 4.  Zonal statistics
+  
+  # Match CRS
   eez_data <- st_transform(eez_data, crs(suitable_cells))
+  
+  # Mask to EEZ and rasterize
   suitable_masked <- mask(suitable_cells, vect(eez_data))
   eez_rast <- rasterize(vect(eez_data), suitable_masked[[1]], field = "rgn")
+  
+  # Calculate suitable area per EEZ
   cell_area <- cellSize(suitable_masked, unit = "km")
   suitable_area_rast <- suitable_masked * cell_area
   total_area_per_eez <- zonal(suitable_area_rast, eez_rast, fun = "sum", na.rm = TRUE)
   
+   # Change Column names for mapping
   colnames(total_area_per_eez) <- c("Region", "Suitable Area (km2)")
+  
+  # Order largest to smallest
   ranked_eez <- total_area_per_eez[order(-total_area_per_eez$"Suitable Area (km2)"), ]
+  # Round up decimals
   ranked_eez$"Suitable Area (km2)" <- round(ranked_eez$"Suitable Area (km2)", 1)
   
-  eez_data$"Suitable Area (km2)" <- setNames(ranked_eez$"Suitable Area (km2)", 
-                                              ranked_eez$Region)[eez_data$rgn]
+# 5.  Visualization
   
-  # Prepare map
+  # Add suitable area to EEZ polygons
+  eez_data$"Suitable Area (km2)" <- setNames(ranked_eez$"Suitable Area (km2)",                 ranked_eez$Region)[eez_data$rgn]
+  
+   # Get land polygons cropped to EEZ extent with buffer
   land <- ne_countries(scale = "medium", returnclass = "sf")
   eez_bbox <- st_bbox(eez_data)
   eez_bbox[c("xmin", "ymin")] <- eez_bbox[c("xmin", "ymin")] - 2
   eez_bbox[c("xmax", "ymax")] <- eez_bbox[c("xmax", "ymax")] + 2
   land_cropped <- st_crop(land, eez_bbox)
   
+   # Create and display map
   map <- tm_shape(land_cropped) +
     tm_polygons(fill = "lightgray", col = "black", lwd = 1) +
     tm_shape(eez_data) +
@@ -159,6 +274,7 @@ map_species_suitability <- function(species_name,
 ```
 
 ## Results
+Function testing on three different species. 
 
 ### Case Study 1: Oysters (General)
 
@@ -180,7 +296,7 @@ map_species_suitability("Oysters", sst_min = 11, sst_max = 30,
 
 ### Case Study 2: Olympia Oysters (*Ostrea lurida*)
 
-The Olympia oyster is the only oyster species native to the West Coast and has significant ecological and cultural value. However, it has much narrower temperature requirements (**10–12°C**) compared to other oyster species.
+The Olympia oyster is the only oyster species native to the West Coast and has significant ecological and cultural value. However, it has much narrower temperature requirements (**10–12°C**) compared to other oyster species but similar depths (down to **71 meters**).
 
 ```{r}
 #| label: fig-olympia
@@ -244,3 +360,6 @@ Froehlich, H. E., Gentry, R. R., & Halpern, B. S. (2018). Global change in marin
 SeaLifeBase. (2024). *Ostrea lurida* (Olympia oyster). https://www.sealifebase.ca/summary/Ostrea-lurida.html
 
 SeaLifeBase. (2024). *Haliotis rufescens* (Red abalone). https://www.sealifebase.ca/summary/Haliotis-rufescens.html
+
+Sealifebase. (2025). *Crassedoma giganteum* (Rock scallop).  https://www.sealifebase.ca/summary/Crassedoma-giganteum.html
+
