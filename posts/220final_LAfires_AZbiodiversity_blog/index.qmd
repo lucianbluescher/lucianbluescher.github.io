@@ -6,7 +6,7 @@ author:
     url: https://lucianbluescher.github.io
     affiliation: Master of Environmental Data Science Program @ The Bren School (UCSB) 
     affiliation-url: https://ucsb-meds.github.io/ 
-date: 2025-11-12
+date: 12-12-2025
 categories: [MEDS, R, Python]
 image: images/landsat_false_perimeter.png
 bibliography: references.bib

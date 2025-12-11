@@ -21,7 +21,7 @@ editor_options:
 ---
 
 ![](images/clipboard-754817526.png)
-Image Credits: (Jane March, The Road Ahead for Sustainable Aquaculture)[https://earth.org/sustainable-aquaculture/]
+Image Credits: [Jane March, The Road Ahead for Sustainable Aquaculture](https://earth.org/sustainable-aquaculture/)
 
 ## The Challenge: Where Should We Farm the Ocean?
 
@@ -374,4 +374,4 @@ SeaLifeBase. (2024). *Ostrea lurida* (Olympia oyster). https://www.sealifebase.c
 
 SeaLifeBase. (2024). *Haliotis rufescens* (Red abalone). https://www.sealifebase.ca/summary/Haliotis-rufescens.html
 
-Sealifebase. (2025). *Crassedoma giganteum* (Rock scallop). https://www.sealifebase.ca/summary/Crassedoma-giganteum.html
+SeaLifeBase. (2025). *Crassedoma giganteum* (Rock scallop). https://www.sealifebase.ca/summary/Crassedoma-giganteum.html
