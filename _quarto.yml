@@ -4,9 +4,9 @@ project:
 
 website:
   title: "Lucian Blue Scher"  # Browser/tab title
-  favicon: images/lucian-headshot.jng  # Icon shown in the tab
+  favicon: images/lucian-headshot.jpg  # Icon shown in the tab
   navbar:
-    logo: /images/lucian-headshot.jng  # Image next to your name in the nav bar
+    logo: images/lucian-headshot.jpg  # Image next to your name in the nav bar
     logo-alt: "Lucian Blue Scher" # Accessible text for the logo
     title: false                      # Hide duplicate text title (logo covers it)
     right:
