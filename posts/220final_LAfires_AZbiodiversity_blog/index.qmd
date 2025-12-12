@@ -1,5 +1,6 @@
 ---
 title: "LA Fires"
+image: "images/false-color.png"
 description: "Remote sensing and equity insights for the 2025 Eaton and Palisades wildfires."
 author: 
   - name: Lucian Blue Scher
@@ -17,7 +18,6 @@ execute:
   kernel: eds220-env
   python:
     path: /opt/anaconda3/envs/eds220-env/bin/python
-image: "images/false-color.png"
 ---
 
 [Full analysis on GitHub](https://github.com/lucianbluescher/eaton-palisades-ej-mapping)
