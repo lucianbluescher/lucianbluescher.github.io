@@ -8,7 +8,6 @@ author:
     affiliation-url: https://ucsb-meds.github.io/ 
 date: 12-12-2025
 categories: [MEDS, R, Python]
-image: "images/false-color.png"
 bibliography: references.bib
 code-fold: true
 editor_options: 
@@ -18,9 +17,10 @@ execute:
   kernel: eds220-env
   python:
     path: /opt/anaconda3/envs/eds220-env/bin/python
+image: "images/false-color.png"
 ---
 
-[Full analysis on GitHub](https://github.com/lucianbluescher/eds220-hwk4)
+[Full analysis on GitHub](https://github.com/lucianbluescher/eaton-palisades-ej-mapping)
 
 # About
 
