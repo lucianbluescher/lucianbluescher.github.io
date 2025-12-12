@@ -8,7 +8,7 @@ author:
     affiliation-url: https://ucsb-meds.github.io/ 
 date: 12-12-2025
 categories: [MEDS, R, Python]
-image: images/false-color.png
+image: "images/false-color.png"
 bibliography: references.bib
 code-fold: true
 editor_options: 
