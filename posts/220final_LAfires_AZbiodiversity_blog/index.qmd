@@ -1,8 +1,5 @@
 ---
 title: "LA Fires"
-image: false-color.png
-  resources:
-    - false-color.png
 description: "Remote sensing and equity insights for the 2025 Eaton and Palisades wildfires."
 author: 
   - name: Lucian Blue Scher
@@ -10,6 +7,7 @@ author:
     affiliation: Master of Environmental Data Science Program @ The Bren School (UCSB) 
     affiliation-url: https://ucsb-meds.github.io/ 
 date: 12-12-2025
+image: false-color.png
 categories: [MEDS, R, Python]
 bibliography: references.bib
 code-fold: true
