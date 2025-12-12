@@ -102,7 +102,7 @@
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#highlights",
     "title": "LA Fires",
     "section": "Highlights",
-    "text": "Highlights\n\nFire perimeter processing and Landsat feature engineering using pandas, geopandas, numpy, and xarray.\nCRS restoration and reprojection to align raster and vector assets for accurate overlays.\nTrue- and false-color visualization with matplotlib, emphasizing burn severity via SWIR/NIR combinations.\nEnvironmental Justice Index joins that compare poverty exposure inside each fire footprint."
+    "text": "Highlights\n\nFire perimeter processing and Landsat feature wrangling using pandas, geopandas, numpy, and xarray.\nRaster manipulation to align raster and vector data.\nTrue and false color visualization with matplotlib.\nEnvironmental Justice Index joins comparing poverty inside each fire footprint."
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#datasets-and-references",
@@ -165,7 +165,7 @@
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#references",
     "title": "LA Fires",
     "section": "References",
-    "text": "References\nData:\n[1] Palisades and Eaton Dissolved Fire Perimeters (2025). (2025). Arcgis.com. https://egis-lacounty.hub.arcgis.com/maps/ad51845ea5fb4eb483bc2a7c38b2370c/about\n‌[2] Microsoft Planetary Computer. (2025). Microsoft.com. https://planetarycomputer.microsoft.com/dataset/landsat-c2-l2\n[3] CDC. (2024, December 3). EJI Data Download. Place and Health - Geospatial Research, Analysis, and Services Program (GRASP). https://www.atsdr.cdc.gov/place-health/php/eji/eji-data-download.html\nBackground information and Landsat band combinations:\n[3] Why is that Forest Red and That Cloud Blue? (2014, March 4). Nasa.gov; NASA Earth Observatory. https://earthobservatory.nasa.gov/features/FalseColor\n[4] What are the band designations for the Landsat satellites? (2025, July 11). USGS. https://www.usgs.gov/faqs/what-are-band-designations-landsat-satellites\n[5] Common Landsat Band Combinations. (2021, November 12). USGS. https://www.usgs.gov/media/images/common-landsat-band-combinations"
+    "text": "References\nBackground information and Landsat band combinations:\n[1] Why is that Forest Red and That Cloud Blue? (2014, March 4). Nasa.gov; NASA Earth Observatory. https://earthobservatory.nasa.gov/features/FalseColor\n[2] What are the band designations for the Landsat satellites? (2025, July 11). USGS. https://www.usgs.gov/faqs/what-are-band-designations-landsat-satellites\n[3] Common Landsat Band Combinations. (2021, November 12). USGS. https://www.usgs.gov/media/images/common-landsat-band-combinations"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#takeaways",
@@ -173,5 +173,82 @@
     "title": "LA Fires",
     "section": "Takeaways",
     "text": "Takeaways\n\nTrue-color Landsat composite — baseline context for the Angeles National Forest canopy before highlighting change.\n\nFalse-color SWIR/NIR composite with perimeter overlays — pinpoints burn severity differences between Eaton and Palisades.\n\nEJI poverty comparison plots — show how each footprint intersects low-income census tracts, guiding equity-focused recovery planning.\n\nAfter reviewing the visuals, the key takeaway is that burn severity and social vulnerability align across multiple tracts, implying that remote sensing plus equity data should inform targeted mitigation and aid deployment."
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#about-the-data",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#about-the-data",
+    "title": "LA Fires",
+    "section": "About the Data",
+    "text": "About the Data\nIn this notebook we use three datasets:\n1) Palisades & Eaton fire perimeters (Los Angeles County NIFC)\nThe first dataset contains fire perimeter polygons delineating burn footprints for the Palisades and Eaton wildfires of 2025. It comes from the FIRIS (Fire Integrated Real-time Intelligence System) infrared aicraft system in collaboration with the NIFC (National Interagency Fire Center. The data was accessed 2025-12-22 from ArcGIS Online. For this analysis we use just the .shp file in the folder.\n2) Landsat 8 Collection 2 Level-2 surface reflectance\nThe second dataset is a NetCDF containing multispectral surface reflectance information from (RGB, NIR, SWIR) from the Landsat 8 satellite. This data was downloaded from Microsoft Planetary Computer on 2025-11-22, and is read as an xarrayDataset.\nWe use five bands in our analysis:\n\nRed/Green/Blue (Bands 4/3/2): true-color composites.\nNear-Infrared (NIR08 - Band 5): vegetation response.\nShort-Wave Infrared (SWIR22 Bands 6/7): moisture/char sensitivity, used to highlight burn scars via false-color composites.\n\n3) Environmental Justice Index (EJI)\nThe final dataset we use is the census tract-level poverty indicator sourced from the 2018–2022 Census Bureau American Community Survey (ACS) 5-year data and downloaded from the Agency for Toxic Substances and Disease Registry. We use the “E_POV200” variable defined in the metadata as “Percentage of persons with income below 200% of the federal poverty level” to map socioeconomic vulnerability in tracts intersecting the fire perimeters."
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#final-output",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#final-output",
+    "title": "LA Fires",
+    "section": "Final output",
+    "text": "Final output\nThis notebook produces this final output of poverty levels in each fires burn area."
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-libraries",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-libraries",
+    "title": "LA Fires",
+    "section": "Import libraries",
+    "text": "Import libraries\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport os\nimport geopandas as gpd\nimport xarray as xr\n\nimport matplotlib as mpl\nimport matplotlib.pyplot as plt\nimport contextily as ctx"
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-data",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-data",
+    "title": "LA Fires",
+    "section": "Import data",
+    "text": "Import data\n\n\nCode\n# Eaton fire perimeter\nfp = os.path.join('data', 'Eaton_Perimeter_20250121', 'Eaton_Perimeter_20250121.shp')\neaton = gpd.read_file(fp)\n\n# Palisades fire perimeter\nfp = os.path.join('data', 'Palisades_Perimeter_20250121', 'Palisades_Perimeter_20250121.shp')\npalisades = gpd.read_file(fp)\n\n# Landsat 8\nlandsat = xr.open_dataset(\n    \"data/landsat8-2025-02-23-palisades-eaton.nc\")\n    \n# Environmental Justice Index\neji = gpd.read_file(\"data/EJI_2024_California/EJI_2024_California.gdb\")"
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-perimeter-data",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-perimeter-data",
+    "title": "LA Fires",
+    "section": "Prepare perimeter data",
+    "text": "Prepare perimeter data\nWe start by verifying the coordinate reference system (CRS) of perimeter data and check that both are projected.\n\n\nCode\n# Fire perimeter data exploration\nprint(f\"The CRS for the Eaton Perimeter is {eaton.crs}\")\nprint(f\"The CRS for the Palisades Perimeter is {palisades.crs}\")\nprint(f\"The Eaton Perimeter is projected: {eaton.crs.is_projected}\")\nprint(f\"The Palisades Perimeter is projected: {palisades.crs.is_projected}\")\n\n\nThe CRS for the Eaton Perimeter is EPSG:3857\nThe CRS for the Palisades Perimeter is EPSG:3857\nThe Eaton Perimeter is projected: True\nThe Palisades Perimeter is projected: True\n\n\nBoth perimeters share a projected CRS and schema.\nBefore we move on lets check for no-data values in our landsat raster and remove them if they exist, confirming with an assert.\n\n\nCode\n# Fill NaNs with zero if any\nif landsat.to_array().isnull().any():\n    landsat = landsat.fillna(0)\n\n# Assert no NaNs remain\nassert not landsat.to_array().isnull().any(), \"NaNs remain after fill.\""
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-landsat-8-data",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-landsat-8-data",
+    "title": "LA Fires",
+    "section": "Prepare Landsat 8 data",
+    "text": "Prepare Landsat 8 data\nLandsat arrives as an xarray.Dataset with georeferencing stored in spatial_ref. Because xarray sometimes drops CRS info, we explicitly write it back so raster/vector overlays align perfectly.\n\n\nCode\n# Get the CRS of landsat\nlandsat_crs = landsat.spatial_ref.crs_wkt\n\n# Recover the geospatial information by using rio.write_crs() \nlandsat = landsat.rio.write_crs(landsat_crs)\n\n# Print the CRS of the updated dataset.\nprint(landsat.rio.crs)\n\n# Let's also match our fire perimeter data to the landsat crs\npalisades = palisades.to_crs(landsat.rio.crs)\neaton     = eaton.to_crs(landsat.rio.crs)\n\n\nEPSG:32611"
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#true-color-image-rendering",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#true-color-image-rendering",
+    "title": "LA Fires",
+    "section": "True-color image rendering",
+    "text": "True-color image rendering\nIn order to visualize the burned areas we build a true-color Landsat image by stacking the red, green, and blue bands, then filling no-data again to be certain. Casting to a float ensures safe color scaling.\n\n\nCode\n# Build and clean RGB\nrgb = landsat[[\"red\", \"green\", \"blue\"]].to_array()\nrgb = rgb.where(np.isfinite(rgb), 0).astype(float)\n\nfig, ax = plt.subplots(figsize=(8, 8))\n_ = rgb.plot.imshow(\n    ax=ax,\n    vmin=8200, vmax=13500,\n    robust=True,\n    add_colorbar=False\n)\n\n# Overlays\npalisades.boundary.plot(ax=ax, color=\"red\", linewidth=1)\neaton.boundary.plot(ax=ax, color=\"red\", linewidth=1)\n\n# Labels\np_center = palisades.geometry.centroid.iloc[0]\ne_center = eaton.geometry.centroid.iloc[0]\ndx, dy = 100, -5000\nax.text(p_center.x + dx, p_center.y + dy, \"Palisades Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\nax.text(e_center.x + dx, e_center.y + dy, \"Eaton Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\n\n# Lock view to the raster extent \nax.set_xlim(float(rgb.x.min()), float(rgb.x.max()))\nax.set_ylim(float(rgb.y.min()), float(rgb.y.max()))\n\nax.set_title(\"Landsat True Color (Palisades/Eaton)\", fontsize=12, fontweight=\"bold\")\nax.set_axis_off()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\nDespite stretching the colormap (vmin=8200, vmax=13500) to more clearly show burn scars, they still appear as subtle dark patches against the surrounding vegetation, let’s try a false-color map."
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#false-color-image-rendering",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#false-color-image-rendering",
+    "title": "LA Fires",
+    "section": "False-Color image rendering",
+    "text": "False-Color image rendering\nA false-color rendering remaps bands to emphasize burn severity:\n\nSWIR22 as red\nNIR08 as green\nRed as blue.\n\nThis makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.\n\n\nCode\n# Build false-color stack (SWIR–NIR–Red)\nfci = landsat[[\"swir22\", \"nir08\", \"red\"]].to_array()\nfci = fci.where(np.isfinite(fci), 0).astype(float)\n\nfig, ax = plt.subplots(figsize=(8, 8))\n_ = fci.plot.imshow(\n    ax=ax,\n    vmin=7000,\n    vmax=15000,\n    robust=True,\n    add_colorbar=False\n)\n\n# Overlays\npalisades.boundary.plot(ax=ax, color=\"red\", linewidth=1)\neaton.boundary.plot(ax=ax, color=\"red\", linewidth=1)\n\n# Labels\np_center = palisades.geometry.centroid.iloc[0]\ne_center = eaton.geometry.centroid.iloc[0]\ndx, dy = 100, -5000\nax.text(p_center.x + dx, p_center.y + dy, \"Palisades Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\nax.text(e_center.x + dx, e_center.y + dy, \"Eaton Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\n\n# Lock view to raster extent\nax.set_xlim(float(fci.x.min()), float(fci.x.max()))\nax.set_ylim(float(fci.y.min()), float(fci.y.max()))\n\nax.set_title(\"Landsat False Color (Palisades/Eaton)\", fontsize=12, fontweight=\"bold\")\nax.set_axis_off()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\nSWIR–NIR–red composites render burned areas in red hues and healthy vegetation in greens, so the perimeter overlays become immediately interpretable."
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#merging",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#merging",
+    "title": "LA Fires",
+    "section": "Merging",
+    "text": "Merging\nGeoPandas Spatial joins sjoin isolates the tracts intersecting each fire perimeter.\n\n\nCode\n# EJI tracts overlapping Palisades\neji_pali = gpd.sjoin(\n    eji, palisades[[\"geometry\"]],\n    how=\"inner\", predicate=\"intersects\"\n).drop(columns=[\"index_right\"])\n\n# EJI tracts overlapping Eaton\neji_eat = gpd.sjoin(\n    eji, eaton[[\"geometry\"]],\n    how=\"inner\", predicate=\"intersects\"\n).drop(columns=[\"index_right\"])"
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#clipping",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#clipping",
+    "title": "LA Fires",
+    "section": "Clipping",
+    "text": "Clipping\nGeoPandas clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting.\n\n\nCode\n# Clip EJI to Palisades\npalisades_clip = gpd.clip(eji_pali, palisades)\n\n# Clip EJI to Eaton\neaton_clip = gpd.clip(eji_eat, eaton)"
+  },
+  {
+    "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#final-visualition",
+    "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#final-visualition",
+    "title": "LA Fires",
+    "section": "Final visualition",
+    "text": "Final visualition\nLastly, we compare poverty exposure for the tracts inside each perimeter. The goal of this map is too compare the census tracts within each fire boundary and determine if there is economic injustice within either area.\n\n\nCode\neji_variable = \"E_POV200\"\nvmin = min(palisades_clip[eji_variable].min(), eaton_clip[eji_variable].min())\nvmax = max(palisades_clip[eji_variable].max(), eaton_clip[eji_variable].max())\ncmap = mpl.colormaps[\"YlGnBu\"]\n\nfig, (ax1, ax2) = plt.subplots(\n    1, 2, figsize=(9, 6.5), constrained_layout=True\n)\n\n# Palisades\npalisades_clip.plot(\n    column=eji_variable, cmap=cmap, vmin=vmin, vmax=vmax,\n    linewidth=0.4, edgecolor=\"0.6\", legend=False, ax=ax1\n)\nax1.set_title(\"Palisades Fire Area\", fontsize=13, fontweight=\"bold\")\nax1.axis(\"off\")\n\n# Eaton\neaton_clip.plot(\n    column=eji_variable, cmap=cmap, vmin=vmin, vmax=vmax,\n    linewidth=0.4, edgecolor=\"0.6\", legend=False, ax=ax2\n)\nax2.set_title(\"Eaton Fire Area\", fontsize=13, fontweight=\"bold\")\nax2.axis(\"off\")\n\n# Color bar\nsm = mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), cmap=cmap)\ncbar = fig.colorbar(sm, ax=[ax1, ax2], orientation=\"horizontal\", fraction=0.05, pad=0.05)\ncbar.set_label(\"Percent of persons below 200% of the federal poverty level\", fontsize=11)\n\n# Titles\nfig.suptitle(\"Poverty in Census Tracts within Palisades and Eaton Fire perimeters\",\n             fontsize=15, fontweight=\"bold\", y=0.75)\nfig.text(0.5, 0.70,\n         \"Census tracts are clipped to fire perimeters\",\n         ha=\"center\", va=\"center\", fontsize=11)\n\nplt.show()\n\n\n\n\n\n\n\n\n\nOverall, neither footprint is dominated by very high‑poverty tracts, but there’s a clear contrast: the Eaton perimeter includes a few tracts with markedly higher poverty shares (darker blues), while the Palisades tracts are mostly midrange to lower. This mirrors Los Angeles’ spatial pattern—more affluent coastal/Westside areas around Palisades versus pockets of higher economic vulnerability farther east—suggesting greater potential EJ concerns within parts of the Eaton area."
   }
 ]

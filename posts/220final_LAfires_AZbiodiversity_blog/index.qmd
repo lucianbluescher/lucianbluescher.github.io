@@ -24,50 +24,56 @@ execute:
 
 # About
 
-## Purpose
-
-The Eaton and Palisades Fires reshaped large swaths of the Los Angeles foothills in early 2025. This post summarizes a remote-sensing workflow that converts Landsat 8 surface reflectance into both true- and false-color composites, overlays official fire perimeters, and links the impacted footprints to the EPA’s Environmental Justice Index (EJI) to highlight socially vulnerable neighborhoods caught within the burn scars.
-
-![](images/landsat_false_perimeter.png){fig-alt="False color map of the Los Angeles area highlighting Eaton and Palisades fire perimeters"}
+The [Eaton](https://en.wikipedia.org/wiki/Eaton_Fire) and [Palisades](https://en.wikipedia.org/wiki/Palisades_Fire) Fires reshaped large swaths of the Los Angeles foothills in early 2025. In this post we go through a remote-sensing workflow that converts Landsat 8 surface reflectance into true and false-color composite maps, overlays official fire perimeters, and links the impacted footprints to poverty data from the EPA’s Environmental Justice Index (EJI) to highlight economically vulnerable census tracts caught within the burn scars, and identify an environmental injustice if it exists.
 
 ## Highlights
 
--   Fire perimeter processing and Landsat feature engineering using `pandas`, `geopandas`, `numpy`, and `xarray`.
--   CRS restoration and reprojection to align raster and vector assets for accurate overlays.
--   True- and false-color visualization with `matplotlib`, emphasizing burn severity via SWIR/NIR combinations.
--   Environmental Justice Index joins that compare poverty exposure inside each fire footprint.
+-   Fire perimeter processing and Landsat feature wrangling using `pandas`, `geopandas`, `numpy`, and `xarray`.
+-   Raster manipulation to align raster and vector data.
+-   True and false color visualization with `matplotlib`.
+-   Environmental Justice Index joins comparing poverty inside each fire footprint.
 
-## Datasets
+## About the Data
 
-1)  Palisades & Eaton dissolved fire perimeters from FIRIS (Los Angeles County NIFC) via [ArcGIS Online](https://egis-lacounty.hub.arcgis.com/maps/ad51845ea5fb4eb483bc2a7c38b2370c/about) delineating burn footprints for analysis. (accessed 2025-12-22)
+In this notebook we use three datasets:
 
-2)  Landsat 8 Collection 2 Level-2 surface reflectance (RGB, NIR, SWIR) from [Microsoft Planetary Computer](https://planetarycomputer.microsoft.com/dataset/landsat-c2-l2); clipped to the study area for land-surface and post-fire change detection. (accessed 2025-11-22)
+**1) Palisades & Eaton fire perimeters (Los Angeles County NIFC)**
 
-3)  The Environmental Justice Index (EJI) data set from the [Agency for Toxic Substances and Disease Registry](https://www.atsdr.cdc.gov/place-health/php/eji/eji-data-download.html) (ATSDR) provides downloadable environmental justice indicators, combining environmental burdens with social and health factors at the community level. (accessed 2025-11-22)
+The first dataset contains fire perimeter polygons delineating burn footprints for the Palisades and Eaton wildfires of 2025. It comes from the FIRIS (Fire Integrated Real-time Intelligence System) infrared aicraft system in collaboration with the NIFC (National Interagency Fire Center. The data was accessed 2025-12-22 from [ArcGIS Online](https://egis-lacounty.hub.arcgis.com/maps/ad51845ea5fb4eb483bc2a7c38b2370c/about). For this analysis we use just the .shp file in the folder.
+
+**2) Landsat 8 Collection 2 Level-2 surface reflectance**
+
+The second dataset is a NetCDF containing multispectral surface reflectance information from (RGB, NIR, SWIR) from the Landsat 8 satellite. This data was downloaded from [Microsoft Planetary Computer](https://planetarycomputer.microsoft.com/dataset/landsat-c2-l2) on 2025-11-22, and is read as an xarrayDataset.
+
+We use five bands in our analysis:
+
+-   Red/Green/Blue (Bands 4/3/2): true-color composites.
+
+-   Near-Infrared (NIR08 - Band 5): vegetation response.
+
+-   Short-Wave Infrared (SWIR22 Bands 6/7): moisture/char sensitivity, used to highlight burn scars via false-color composites.
+
+**3) Environmental Justice Index (EJI)**
+
+The final dataset we use is the census tract-level poverty indicator sourced from the 2018–2022 [Census Bureau American Community Survey (ACS) 5-year data](https://www.census.gov/data/developers/data-sets/acs-5year.html) and downloaded from the [Agency for Toxic Substances and Disease Registry](https://www.atsdr.cdc.gov/place-health/php/eji/eji-data-download.html). We use the "E_POV200" variable defined in the metadata as “Percentage of persons with income below 200% of the federal poverty level” to map socioeconomic vulnerability in tracts intersecting the fire perimeters.
 
 ## References
 
-Data:
-
-\[1\] Palisades and Eaton Dissolved Fire Perimeters (2025). (2025). Arcgis.com. https://egis-lacounty.hub.arcgis.com/maps/ad51845ea5fb4eb483bc2a7c38b2370c/about
-
-‌\[2\] Microsoft Planetary Computer. (2025). Microsoft.com. https://planetarycomputer.microsoft.com/dataset/landsat-c2-l2
-
-\[3\] CDC. (2024, December 3). EJI Data Download. Place and Health - Geospatial Research, Analysis, and Services Program (GRASP). https://www.atsdr.cdc.gov/place-health/php/eji/eji-data-download.html
-
 Background information and Landsat band combinations:
 
-\[3\] Why is that Forest Red and That Cloud Blue? (2014, March 4). Nasa.gov; NASA Earth Observatory. https://earthobservatory.nasa.gov/features/FalseColor
+\[1\] Why is that Forest Red and That Cloud Blue? (2014, March 4). Nasa.gov; NASA Earth Observatory. https://earthobservatory.nasa.gov/features/FalseColor
 
-\[4\] What are the band designations for the Landsat satellites? (2025, July 11). USGS. https://www.usgs.gov/faqs/what-are-band-designations-landsat-satellites
+\[2\] What are the band designations for the Landsat satellites? (2025, July 11). USGS. https://www.usgs.gov/faqs/what-are-band-designations-landsat-satellites
 
-\[5\] Common Landsat Band Combinations. (2021, November 12). USGS. https://www.usgs.gov/media/images/common-landsat-band-combinations
+\[3\] Common Landsat Band Combinations. (2021, November 12). USGS. https://www.usgs.gov/media/images/common-landsat-band-combinations
 
-## Analysis Overview
+## Final output
 
-### Setup
+This notebook produces this final output of poverty levels in each fires burn area.
 
-We load the Python libraries used for tabular wrangling, geospatial analysis, and visualization.
+![](images/final-output.png){fig-alt="False color map of the Los Angeles area highlighting Eaton and Palisades fire perimeters"}
+
+## Import libraries
 
 ```{python}
 import pandas as pd
@@ -75,27 +81,34 @@ import numpy as np
 import os
 import geopandas as gpd
 import xarray as xr
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import contextily as ctx
 ```
 
-Next we read the Eaton and Palisades perimeter shapefiles plus the clipped Landsat NetCDF scene.
+## Import data
 
 ```{python}
+# Eaton fire perimeter
 fp = os.path.join('data', 'Eaton_Perimeter_20250121', 'Eaton_Perimeter_20250121.shp')
 eaton = gpd.read_file(fp)
 
+# Palisades fire perimeter
 fp = os.path.join('data', 'Palisades_Perimeter_20250121', 'Palisades_Perimeter_20250121.shp')
 palisades = gpd.read_file(fp)
 
+# Landsat 8
 landsat = xr.open_dataset(
     "data/landsat8-2025-02-23-palisades-eaton.nc")
+    
+# Environmental Justice Index
+eji = gpd.read_file("data/EJI_2024_California/EJI_2024_California.gdb")
 ```
 
-### Data Checks and cleaning
+## Prepare perimeter data
 
-We verify CRS metadata and check that our perimeters are projected.
+We start by verifying the coordinate reference system (CRS) of perimeter data and check that both are projected.
 
 ```{python}
 # Fire perimeter data exploration
@@ -105,18 +118,7 @@ print(f"The Eaton Perimeter is projected: {eaton.crs.is_projected}")
 print(f"The Palisades Perimeter is projected: {palisades.crs.is_projected}")
 ```
 
-We wont run this exploration to reduce clutter, but it is important to see what information we are looking for.
-
-```{python}      
-#| eval: false
-print(landsat.coords) # View coordinates
-print(landsat.var)    # View Variables
-print(landsat.dims)   # View Dimensions  
-eaton.info()          # Data summary  
-palisades.info()
-```
-
-Both perimeters share a projected CRS and schema, while Landsat arrives as an xarray.Dataset with georeferencing stored in `spatial_ref`.
+Both perimeters share a projected CRS and schema.
 
 Before we move on lets check for no-data values in our landsat raster and remove them if they exist, confirming with an `assert`.
 
@@ -129,16 +131,9 @@ if landsat.to_array().isnull().any():
 assert not landsat.to_array().isnull().any(), "NaNs remain after fill."
 ```
 
-### Restoring Raster CRS Metadata
+## Prepare Landsat 8 data
 
-Because `xarray` sometimes drops CRS info, we explicitly write it back so raster/vector overlays align perfectly.
-
-```{python}
-#| eval: false
-#| include: false
-# Check landsat CRS
-print(landsat.rio.crs)
-```
+Landsat arrives as an xarray.Dataset with georeferencing stored in `spatial_ref`. Because `xarray` sometimes drops CRS info, we explicitly write it back so raster/vector overlays align perfectly.
 
 ```{python}
 # Get the CRS of landsat
@@ -155,9 +150,9 @@ palisades = palisades.to_crs(landsat.rio.crs)
 eaton     = eaton.to_crs(landsat.rio.crs)
 ```
 
-### True-Color image Rendering
+## True-color image rendering
 
-We build a true-color Landsat image by stacking the red, green, and blue bands, then filling no-data again to be certain. Casting to a float ensures safe color scaling. We stretch the colormap (vmin=8200, vmax=13500) to brighten the scene to more clearly show burn scars, but the scars still show up as subtle dark patches against the surrounding vegetation.
+In order to visualize the burned areas we build a true-color Landsat image by stacking the red, green, and blue bands, then filling no-data again to be certain. Casting to a float ensures safe color scaling.
 
 ```{python}
 # Build and clean RGB
@@ -197,8 +192,19 @@ plt.tight_layout()
 plt.show()
 ```
 
-### False-Color Burn Severity Map
-In contrast to the true-color map, a false-color rendering remaps bands to emphasize burn severity: we display SWIR (sensitive to char/ash and soil moisture) as red, NIR (healthy vegetation) as green, and red as blue. This makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.
+Despite stretching the colormap (vmin=8200, vmax=13500) to more clearly show burn scars, they still appear as subtle dark patches against the surrounding vegetation, let's try a false-color map.
+
+## False-Color image rendering
+
+A false-color rendering remaps bands to emphasize burn severity:
+
+- SWIR22 as red 
+
+- NIR08 as green
+
+- Red as blue. 
+
+This makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.
 
 ```{python}
 # Build false-color stack (SWIR–NIR–Red)
@@ -241,46 +247,48 @@ plt.show()
 
 SWIR–NIR–red composites render burned areas in red hues and healthy vegetation in greens, so the perimeter overlays become immediately interpretable.
 
-# Environmental Justice Context
+# EJI analysis
 
-We now pull in the Environmental Justice Index (EJI) geodatabase, align CRS, and prepare tract-level subsets for each perimeter.
+Now we will build tract-level subsets for each fire perimeter to map E_POV200 (percent of persons below 200% of federal poverty level). The goal is to see whether high-poverty census tracts overlap the Palisades and Eaton fire footprints.
 
-### Data
-Let's load our Environmental justice data and match the crs to our fire perimeters.
+First we need to match the CRS of our EJI data to our fire perimeters.
 
 ```{python}
-eji = gpd.read_file("data/EJI_2024_California/EJI_2024_California.gdb")
-
 eji = eji.to_crs(palisades.crs)
 assert eji.crs == eaton.crs
 ```
 
-### Polygon intersection
+## Merging
+`GeoPandas` Spatial joins `sjoin` isolates the tracts intersecting each fire perimeter. 
 
 ```{python}
-# EJI within/overlapping Palisades
+# EJI tracts overlapping Palisades
 eji_pali = gpd.sjoin(
     eji, palisades[["geometry"]],
     how="inner", predicate="intersects"
 ).drop(columns=["index_right"])
 
-# EJI within/overlapping Eaton
+# EJI tracts overlapping Eaton
 eji_eat = gpd.sjoin(
     eji, eaton[["geometry"]],
     how="inner", predicate="intersects"
 ).drop(columns=["index_right"])
 ```
 
-
-Spatial joins isolate the tracts intersecting each fire perimeter. We plot them to confirm the selections before moving to poverty metrics.
+## Clipping
+`GeoPandas` clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting. 
 
 ```{python}
+# Clip EJI to Palisades
 palisades_clip = gpd.clip(eji_pali, palisades)
+
+# Clip EJI to Eaton
 eaton_clip = gpd.clip(eji_eat, eaton)
 ```
 
+## Final visualition
 
-Finally we compare poverty exposure (`E_POV200`) for the tracts inside each perimeter using a shared legend range.
+Lastly, we compare poverty exposure for the tracts inside each perimeter. The goal of this map is too compare the census tracts within each fire boundary and determine if there is economic injustice within either area.
 
 ```{python}
 eji_variable = "E_POV200"
@@ -308,7 +316,7 @@ eaton_clip.plot(
 ax2.set_title("Eaton Fire Area", fontsize=13, fontweight="bold")
 ax2.axis("off")
 
-# Shared colorbar
+# Color bar
 sm = mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), cmap=cmap)
 cbar = fig.colorbar(sm, ax=[ax1, ax2], orientation="horizontal", fraction=0.05, pad=0.05)
 cbar.set_label("Percent of persons below 200% of the federal poverty level", fontsize=11)
@@ -323,12 +331,4 @@ fig.text(0.5, 0.70,
 plt.show()
 ```
 
-These joins reveal that both fire scars overlap tracts with elevated poverty scores, underscoring the importance of tailoring recovery resources to vulnerable communities.
-
-## Takeaways
-
-1.  **True-color Landsat composite** — baseline context for the Angeles National Forest canopy before highlighting change.\
-2.  **False-color SWIR/NIR composite with perimeter overlays** — pinpoints burn severity differences between Eaton and Palisades.\
-3.  **EJI poverty comparison plots** — show how each footprint intersects low-income census tracts, guiding equity-focused recovery planning.
-
-After reviewing the visuals, the key takeaway is that burn severity and social vulnerability align across multiple tracts, implying that remote sensing plus equity data should inform targeted mitigation and aid deployment.
+Overall, neither footprint is dominated by very high‑poverty tracts, but there’s a clear contrast: the Eaton perimeter includes a few tracts with markedly higher poverty shares (darker blues), while the Palisades tracts are mostly midrange to lower. This mirrors Los Angeles’ spatial pattern—more affluent coastal/Westside areas around Palisades versus pockets of higher economic vulnerability farther east—suggesting greater potential EJ concerns within parts of the Eaton area.
