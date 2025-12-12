@@ -30,5 +30,6 @@ format:
     page-layout: full   # Full-width layout
     mainfont: Oswald    # Body font
 
-
+resources:
+  - "posts/**/false-color.png"
 
