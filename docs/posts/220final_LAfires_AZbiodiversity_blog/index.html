@@ -281,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="import-libraries" class="level2">
 <h2 class="anchored" data-anchor-id="import-libraries">Import libraries</h2>
-<div id="adfbbb43" class="cell" data-execution_count="1">
+<div id="c15033ac" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -298,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="import-data" class="level2">
 <h2 class="anchored" data-anchor-id="import-data">Import data</h2>
-<div id="4030e603" class="cell" data-execution_count="2">
+<div id="12d96e97" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Eaton fire perimeter</span></span>
@@ -321,7 +321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="prepare-perimeter-data" class="level2">
 <h2 class="anchored" data-anchor-id="prepare-perimeter-data">Prepare perimeter data</h2>
 <p>We start by verifying the coordinate reference system (CRS) of perimeter data and check that both are projected.</p>
-<div id="9f7f5b06" class="cell" data-execution_count="3">
+<div id="30668fed" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fire perimeter data exploration</span></span>
@@ -339,7 +339,7 @@ The Palisades Perimeter is projected: True</code></pre>
 </div>
 <p>Both perimeters share a projected CRS and schema.</p>
 <p>Before we move on lets check for no-data values in our landsat raster and remove them if they exist, confirming with an <code>assert</code>.</p>
-<div id="0065aee4" class="cell" data-execution_count="4">
+<div id="7915fcfb" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill NaNs with zero if any</span></span>
@@ -354,7 +354,7 @@ The Palisades Perimeter is projected: True</code></pre>
 <section id="prepare-landsat-8-data" class="level2">
 <h2 class="anchored" data-anchor-id="prepare-landsat-8-data">Prepare Landsat 8 data</h2>
 <p>Landsat arrives as an xarray.Dataset with georeferencing stored in <code>spatial_ref</code>. Because <code>xarray</code> sometimes drops CRS info, we explicitly write it back so raster/vector overlays align perfectly.</p>
-<div id="df68860e" class="cell" data-execution_count="5">
+<div id="747dc090" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the CRS of landsat</span></span>
@@ -378,7 +378,7 @@ The Palisades Perimeter is projected: True</code></pre>
 <section id="true-color-image-rendering" class="level2">
 <h2 class="anchored" data-anchor-id="true-color-image-rendering">True-color image rendering</h2>
 <p>In order to visualize the burned areas we build a true-color Landsat image by stacking the red, green, and blue bands, then filling no-data again to be certain. Casting to a float ensures safe color scaling.</p>
-<div id="f9e64d14" class="cell" data-execution_count="6">
+<div id="02be52a4" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build and clean RGB</span></span>
@@ -436,7 +436,7 @@ The Palisades Perimeter is projected: True</code></pre>
 <li><p>Red as blue.</p></li>
 </ul>
 <p>This makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.</p>
-<div id="ca58a113" class="cell" data-execution_count="7">
+<div id="b0edf58d" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build false-color stack (SWIR–NIR–Red)</span></span>
@@ -491,7 +491,7 @@ The Palisades Perimeter is projected: True</code></pre>
 <h1>EJI analysis</h1>
 <p>Now we will build tract-level subsets for each fire perimeter to map E_POV200 (percent of persons below 200% of federal poverty level). The goal is to see whether high-poverty census tracts overlap the Palisades and Eaton fire footprints.</p>
 <p>First we need to match the CRS of our EJI data to our fire perimeters.</p>
-<div id="fff463a7" class="cell" data-execution_count="8">
+<div id="3eb46cdc" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>eji <span class="op">=</span> eji.to_crs(palisades.crs)</span>
@@ -501,7 +501,7 @@ The Palisades Perimeter is projected: True</code></pre>
 <section id="merging" class="level2">
 <h2 class="anchored" data-anchor-id="merging">Merging</h2>
 <p><code>GeoPandas</code> Spatial joins <code>sjoin</code> isolates the tracts intersecting each fire perimeter.</p>
-<div id="e299f920" class="cell" data-execution_count="9">
+<div id="86d78a36" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EJI tracts overlapping Palisades</span></span>
@@ -521,7 +521,7 @@ The Palisades Perimeter is projected: True</code></pre>
 <section id="clipping" class="level2">
 <h2 class="anchored" data-anchor-id="clipping">Clipping</h2>
 <p><code>GeoPandas</code> clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting.</p>
-<div id="c3d9e84e" class="cell" data-execution_count="10">
+<div id="36730dd3" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clip EJI to Palisades</span></span>
@@ -535,7 +535,7 @@ The Palisades Perimeter is projected: True</code></pre>
 <section id="final-visualition" class="level2">
 <h2 class="anchored" data-anchor-id="final-visualition">Final visualition</h2>
 <p>Lastly, we compare poverty exposure for the tracts inside each perimeter. The goal of this map is too compare the census tracts within each fire boundary and determine if there is economic injustice within either area.</p>
-<div id="068bda4b" class="cell" data-execution_count="11">
+<div id="532177cc" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>eji_variable <span class="op">=</span> <span class="st">"E_POV200"</span></span>

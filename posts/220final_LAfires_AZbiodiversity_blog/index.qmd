@@ -8,7 +8,7 @@ author:
     affiliation-url: https://ucsb-meds.github.io/ 
 date: 12-12-2025
 categories: [MEDS, R, Python]
-image: images/landsat_false_perimeter.png
+image: images/final-output.png
 bibliography: references.bib
 code-fold: true
 editor_options: 
@@ -198,11 +198,11 @@ Despite stretching the colormap (vmin=8200, vmax=13500) to more clearly show bur
 
 A false-color rendering remaps bands to emphasize burn severity:
 
-- SWIR22 as red 
+-   SWIR22 as red
 
-- NIR08 as green
+-   NIR08 as green
 
-- Red as blue. 
+-   Red as blue.
 
 This makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.
 
@@ -259,7 +259,8 @@ assert eji.crs == eaton.crs
 ```
 
 ## Merging
-`GeoPandas` Spatial joins `sjoin` isolates the tracts intersecting each fire perimeter. 
+
+`GeoPandas` Spatial joins `sjoin` isolates the tracts intersecting each fire perimeter.
 
 ```{python}
 # EJI tracts overlapping Palisades
@@ -276,7 +277,8 @@ eji_eat = gpd.sjoin(
 ```
 
 ## Clipping
-`GeoPandas` clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting. 
+
+`GeoPandas` clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting.
 
 ```{python}
 # Clip EJI to Palisades
