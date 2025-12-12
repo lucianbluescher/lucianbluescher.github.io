@@ -1,8 +1,8 @@
 ---
 title: "LA Fires"
- image: false-color.png
-   resources:
-     - false-color.png
+image: false-color.png
+  resources:
+    - false-color.png
 description: "Remote sensing and equity insights for the 2025 Eaton and Palisades wildfires."
 author: 
   - name: Lucian Blue Scher
