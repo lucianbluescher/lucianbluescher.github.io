@@ -1,5 +1,7 @@
 ---
 title: "LA Fires"
+resources:
+  - "images/false-color.png"
 image: "images/false-color.png"
 description: "Remote sensing and equity insights for the 2025 Eaton and Palisades wildfires."
 author: 
