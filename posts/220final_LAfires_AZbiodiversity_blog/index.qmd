@@ -7,7 +7,7 @@ author:
     affiliation: Master of Environmental Data Science Program @ The Bren School (UCSB) 
     affiliation-url: https://ucsb-meds.github.io/ 
 date: 12-12-2025
-image: false-color.png
+image: /images/false-color.png
 categories: [MEDS, R, Python]
 bibliography: references.bib
 code-fold: true
