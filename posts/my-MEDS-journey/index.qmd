@@ -1,0 +1,725 @@
+---
+title: "My Journey Through MEDS: A Year of Environmental Data Science"
+author: "Lucian Scher"
+date: 2/12/26 #today
+format: 
+  closeread-html:
+    css: ../../styles.scss
+    embed-resources: true
+    toc: true
+    toc-depth: 3
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  fig.align = "center"
+)
+```
+
+# Introduction: A Year of Transformation
+
+{#cr-intro}
+When I began the Master of Environmental Data Science (MEDS) program at UC Santa Barbara's Bren School, I knew I was stepping into a world where environmental science meets cutting-edge computational methods. What I didn't fully anticipate was how profoundly this one-year intensive program would reshape my understanding of data, science, and the complex environmental challenges facing our planet.
+
+This journey—from foundational mathematics to advanced machine learning, from geospatial analysis to policy evaluation—culminated in a capstone project that seeks to identify sustainable pathways for hydropower development in a net-zero future. Through this closeread document, I invite you to explore the knowledge, skills, and insights I've gained across thirteen core courses and a transformative capstone experience.
+
+:::{.cr-section}
+:::{#cr-intro}
+<!-- ![PLACEHOLDER: Photo of Bren School or UCSB campus - wide landscape shot showing the beautiful coastal setting where MEDS takes place](images/meds-campus.jpg) -->
+
+The MEDS program is designed as an intensive, one-year professional degree that bridges environmental science with data science. As a student, I was immersed in a collaborative environment supported by expert faculty from the Bren School and the National Center for Ecological Analysis & Synthesis (NCEAS). The program's philosophy centers on using data science to advance solutions to environmental problems—a mission that resonated deeply with my own goals.
+:::
+:::
+
+## The Program Structure
+
+The MEDS curriculum is organized into four quarters, each building upon the previous:
+
+- **Summer Session B**: Foundational skills in mathematics, workflows, Python, and scientific programming
+- **Fall Quarter**: Working with environmental datasets, statistics, geospatial analysis, and ethics
+- **Winter Quarter**: Modeling environmental systems, data visualization, policy evaluation, and capstone initiation
+- **Spring Quarter**: Databases, machine learning, and capstone completion
+
+Each course was designed not just to teach technical skills, but to foster a deep understanding of how data science can be responsibly applied to environmental challenges.
+
+---
+
+# Summer Session B: Building Foundations
+
+{#cr-summer}
+The summer session was an intensive introduction to the tools and thinking that would underpin everything to come. Four courses in rapid succession: Essential Math, Analytical Workflows, Python Programming, and Scientific Programming Essentials.
+
+:::{.cr-section}
+## EDS 212: Essential Math for Environmental Data Science
+
+*Instructor: Carmen Galaz García*
+
+Mathematics is the language of data science. This course refreshed fundamental skills in algebra, calculus, differential equations, linear algebra, and logical operations—all essential for understanding the models and methods we would use throughout the program.
+
+<!-- ![PLACEHOLDER: Mathematical visualization showing calculus concepts or distribution functions](images/eds212-math.jpg) -->
+
+**Key Concepts:**
+- Multivariate functions and their applications
+- Derivative and integral calculus for environmental modeling
+- Differential equations for dynamic systems
+- Linear algebra for data transformations
+- Logical operations for data filtering and conditional analysis
+
+The course emphasized that mathematical understanding isn't just about computation—it's about developing intuition for how environmental systems behave and how we can represent them mathematically.
+:::
+
+:::{.cr-section}
+## EDS 214: Analytical Workflows and Scientific Reproducibility
+
+*Instructor: Max Czapanskiy*
+
+Reproducibility isn't optional in science—it's fundamental. This course taught me how to create workflows that are transparent, shareable, and reproducible.
+
+<!-- ![PLACEHOLDER: Screenshot of a well-organized GitHub repository showing project structure, README, and workflow documentation](images/eds214-workflow.jpg) -->
+
+**Core Skills:**
+1. **Automation**: Scripting every step of an analytical workflow
+2. **Modularity**: Organizing workflow components for reusability
+3. **Documentation**: Clearly documenting components and their relationships
+4. **Scaling**: Adapting workflows for computational performance and large datasets
+5. **Collaboration**: Working in teams to develop shared workflows
+
+The course instilled in me the importance of thinking about analysis as a process, not just a result. Every script, every data transformation, every visualization should be traceable and reproducible.
+:::
+
+:::{.cr-section}
+## EDS 217: Python for Environmental Data Science
+
+*Instructor: Kelly Caylor*
+
+Python became my primary tool for data manipulation and analysis. This course covered foundational programming concepts through the lens of environmental data.
+
+<!-- ![PLACEHOLDER: Python code visualization or Jupyter notebook showing data analysis workflow](images/eds217-python.jpg) -->
+
+**What I Learned:**
+- Data structures (lists, dictionaries, DataFrames)
+- Programming basics (loops, conditionals, functions)
+- Data cleaning, subsetting, aggregation, and transformation
+- Data visualization with matplotlib and seaborn
+- Application to environmental problem-solving
+
+The course emphasized that Python isn't just a programming language—it's a tool for thinking about data. Learning to manipulate data programmatically opened up possibilities for analysis that would have been impossible with spreadsheet software.
+:::
+
+:::{.cr-section}
+## EDS 221: Scientific Programming Essentials
+
+*Instructor: Max Czapanskiy*
+
+Building on Python foundations, this course delved deeper into scientific programming practices using both R and Python.
+
+<!-- ![PLACEHOLDER: Code comparison showing R vs Python approaches to the same analysis](images/eds221-scientific.jpg) -->
+
+**Advanced Topics:**
+- Structured programming and algorithm development
+- Flow control and program logic
+- Advanced data input-output and representation
+- Functions and object-oriented programming
+- Documentation, testing, and debugging
+
+This course taught me that good scientific code is readable, testable, and maintainable. It's not enough for code to work—it needs to be understandable to others (and to your future self).
+:::
+
+---
+
+# Fall Quarter: Deepening Analysis
+
+{#cr-fall}
+Fall quarter brought four courses that expanded my analytical toolkit: Working with Environmental Datasets, Statistics, Geospatial Analysis, and Data Ethics. These courses showed me how to apply foundational skills to real environmental data and questions.
+
+:::{.cr-section}
+## EDS 220: Working with Environmental Datasets
+
+*Instructors: Carmen Galaz García, Annie Adams*
+
+Environmental data comes in many forms: field measurements, station data, remote sensing products, climate model projections. This course taught me how to work with this diversity.
+
+<!-- ![PLACEHOLDER: Visualization showing different types of environmental data: satellite imagery, time series, spatial grids](images/eds220-datasets.jpg) -->
+
+**Key Skills:**
+- Evaluating data collection and quality control methods
+- Working with time-series and spatial information
+- Accessing cloud computing databases and environmental data repositories
+- Basic workflows for selecting, obtaining, and visualizing datasets
+- Best practices for reliable data intercomparisons
+
+I developed a tutorial Jupyter notebook for a use case of my choice, learning to navigate the complexities of real environmental datasets. The course emphasized that understanding data provenance and quality is as important as the analysis itself.
+:::
+
+:::{.cr-section}
+## EDS 222: Statistics for Environmental Data Science
+
+*Instructor: Max Czapanskiy*
+
+Statistics provides the framework for making inferences from data. This course covered fundamental statistical concepts and their application to environmental questions.
+
+<!-- ![PLACEHOLDER: Statistical visualization showing distributions, regression lines, confidence intervals](images/eds222-stats.jpg) -->
+
+**Core Topics:**
+
+### Random Variables and Distributions
+- Binomial distributions for discrete data (presence/absence)
+- Normal distributions for continuous data
+- Gamma distributions for positive continuous variables (durations, concentrations)
+- Understanding parameters and how they control distribution shape
+
+### Linear Regression
+- Fitting lines to points and understanding residuals
+- Quality of fit: R² and variance explained
+- Population vs. sample regression models
+- Assumptions about data generating processes (DGP)
+
+### Categorical and Continuous Predictors
+- Categorical coefficients as intercepts
+- Additive vs. interactive models
+- Confounding variables and backdoor paths
+- DAGs (Directed Acyclic Graphs) for causal relationships
+
+### Inference
+- Permutation and bootstrapping
+- Hypothesis testing and confidence intervals
+- Normal approximations of sampling distributions
+- Linear regression inference
+
+The course emphasized that statistics isn't just about running tests—it's about understanding the assumptions behind methods and choosing appropriate approaches for your data and question.
+:::
+
+:::{.cr-section}
+## EDS 223: Geospatial Analysis and Remote Sensing
+
+*Instructor: Annie Adams*
+
+Spatial data is fundamental to environmental science. This course introduced geographic information science and remote sensing through deep understanding of spatial data models.
+
+<!-- ![PLACEHOLDER: Beautiful map showing geospatial analysis results - perhaps land cover classification or spatial patterns](images/eds223-geospatial.jpg) -->
+
+**Spatial Data Models:**
+
+### Vectors (Discrete Data)
+- Points, lines, and polygons
+- Spatial subsetting and topological relationships
+- Filtering, clipping, and spatial operations
+
+### Rasters (Continuous Data)
+- Grid-based data representation
+- Map algebra: local, focal, zonal, and global operations
+- Aggregating and resampling raster data
+
+### Coordinate Systems
+- Understanding CRS (Coordinate Reference Systems)
+- Geographic vs. projected coordinate systems
+- Datums and map projections
+- Transforming between coordinate systems
+
+### Remote Sensing
+- Passive vs. active remote sensing
+- LiDAR and RADAR fundamentals
+- Energy-matter interactions (absorption, reflectance, scattering)
+- Image resolutions: spatial, temporal, spectral, radiometric
+- Land cover classification (supervised and unsupervised)
+
+The course taught me that spatial data requires special consideration—spatial autocorrelation, coordinate systems, and scale all matter profoundly for analysis and interpretation.
+:::
+
+:::{.cr-section}
+## EDS 242: Ethics and Bias in Environmental Data Science
+
+*Instructor: Jayajit Chakraborty*
+
+Data science isn't neutral. This course examined ethical considerations in collecting, using, and reporting environmental data, and how to recognize and account for biases.
+
+<!-- ![PLACEHOLDER: Infographic or visualization showing types of data bias and their impacts](images/eds242-ethics.jpg) -->
+
+**Types of Data Bias:**
+1. **Confirmation Bias**: Seeing what you want to see
+2. **Historical Bias**: Deceived by context of data creators
+3. **Selection Bias**: Non-representative samples (coverage, non-response, sampling, recall)
+4. **Survivorship Bias**: Including only surviving data points
+5. **Availability Bias**: Recording data by ease of access
+6. **Reporting Bias**: Dataset frequency doesn't reflect real-world frequency
+7. **Observer Bias**: Subjectivity of the observer
+8. **Geographic Data Bias**: Where data comes from matters
+9. **Urban vs. Rural Bias**: Spatial representation disparities
+
+The course emphasized that recognizing bias isn't enough—we must actively work to mitigate it and be transparent about limitations in our data and methods. Ethical data science requires constant vigilance and critical reflection.
+:::
+
+---
+
+# Winter Quarter: Advanced Applications
+
+{#cr-winter}
+Winter quarter brought advanced courses in modeling, visualization, and policy evaluation, while also launching the capstone project. These courses showed me how to apply data science to complex environmental systems and policy questions.
+
+:::{.cr-section}
+## EDS 230: Modeling Environmental Systems
+
+*Instructor: Christina Tague*
+
+Models are simplifications of reality designed to answer questions. This course covered both selecting and applying existing models and designing new ones.
+
+<!-- ![PLACEHOLDER: Conceptual model diagram showing inputs, processes, and outputs of an environmental system](images/eds230-models.jpg) -->
+
+**Model Types:**
+- **Stochastic vs. Deterministic**: Probability-based vs. fixed outcomes
+- **Lumped vs. Spatially Distributed**: Single point vs. spatial variation
+- **Static vs. Dynamic**: Single time point vs. evolving through time
+- **Abstract vs. Physically Based**: Data-driven (ML) vs. mechanism-based
+
+**Key Concepts:**
+- Conceptual models: diagrams of system relationships
+- Sensitivity analysis: understanding parameter uncertainty
+- Dynamic models: differential equations and state space trajectories
+- Feedback loops: positive (runaway growth) and negative (dampening)
+- Stability: stable, unstable, and chaotic systems
+
+The course emphasized that "all models are wrong, but some are useful." The goal isn't perfect representation—it's useful simplification that helps answer specific questions.
+:::
+
+:::{.cr-section}
+## EDS 240: Data Visualization and Communication
+
+*Instructors: Samantha Shanny-Csik, Annie Adams*
+
+Effective communication is central to data science. This course focused on creating responsible, accessible, and visually compelling visualizations.
+
+<!-- ![PLACEHOLDER: Gallery of beautiful data visualizations created during the course](images/eds240-viz.jpg) -->
+
+**The Grammar of Graphics (ggplot2):**
+1. **Data**: Tidy format + aesthetic mappings
+2. **Geometric objects**: Type of plot
+3. **Statistical transformations**: Algorithms for new values
+4. **Position adjustments**: Handling overlaps
+5. **Coordinate systems**: Cartesian, polar, flipped
+6. **Facets**: Subplots for data subsets
+
+**Additional Layers:**
+- Labels: titles, axis labels, legends
+- Annotations: textual labels and highlights
+- Scales: color scales, axis ticks
+- Themes: Customizing non-data elements
+- Layout: Combining multiple plots
+
+The course also introduced **closeread-html** for creating interactive, scrollytelling visualizations—the format you're reading now! This tool allows for sticky elements, triggers, and dynamic highlighting that guide readers through complex narratives.
+:::
+
+:::{.cr-section}
+## EDS 241: Environmental Policy Evaluation
+
+*Instructors: Adam Garber, Annie Adams*
+
+Causal inference is crucial for evaluating environmental policies. This course presented state-of-the-art program evaluation techniques to identify and measure causal effects.
+
+<!-- ![PLACEHOLDER: Visualization showing difference-in-differences analysis or regression discontinuity design](images/eds241-policy.jpg) -->
+
+**Research Designs:**
+
+### Experimental Methods
+- **Randomized Controlled Trials**: Random assignment to treatment/control
+- **Natural Experiments**: Real-world situations mimicking random assignment
+
+### Quasi-Experimental Methods
+- **Difference-in-Differences (DiD)**: Leveraging time trends with parallel trends assumption
+- **Regression Discontinuity Design (RDD)**: Utilizing arbitrary thresholds/cutoffs
+- **Instrumental Variables (IV)**: Exploiting indirect influences
+
+### Other Methods
+- **Fixed Effects**: The within estimator for panel data
+- **Matching Methods**: Creating apples-to-apples comparisons
+
+**Key Concepts:**
+- Potential outcomes framework: Yi(1) vs. Yi(0)
+- Average Treatment Effect (ATE) vs. Average Treatment for the Treated (ATT)
+- Selection bias and omitted variable bias
+- Panel data: repeated measures over time
+- Robust standard errors for heteroscedasticity
+
+The course emphasized that correlation isn't causation. Design-based research methods, combined with careful statistical analysis, allow us to make stronger causal claims about policy impacts.
+:::
+
+:::{.cr-section}
+## EDS 411A: Capstone Project (Part 1)
+
+*Instructor: Carmen Galaz García*
+
+The capstone project is the culmination of the MEDS program—a real-world application of data science to an environmental problem, conducted in collaboration with external clients.
+
+<!-- ![PLACEHOLDER: Team photo or project kickoff meeting with capstone team and clients](images/eds411a-capstone.jpg) -->
+
+**Project Structure:**
+- **10-12 hours per week** dedicated to capstone work
+- **Design and Implementation Plan (DIP)**: First draft due week 5, final due week 10
+- **Faculty Review**: 12-minute presentation of DIP
+- **Collaboration**: Working with clients, advisors, and team members
+
+**Ten Simple Rules for Collaborative Data Science Teams:**
+1. Lead from the front
+2. Seeing is believing
+3. Skin in the game
+4. Comfort through clarity
+5. All codes lead to Rome
+6. People first
+7. Empowerment through ownership
+8. Open science
+9. Safe learning spaces
+10. Have fun
+
+The capstone isn't just about technical skills—it's about professional development, collaboration, and applying everything learned to a meaningful environmental challenge.
+:::
+
+---
+
+# Spring Quarter: Integration and Completion
+
+{#cr-spring}
+Spring quarter brought the final core courses and capstone completion. These courses integrated everything learned and prepared us for professional practice.
+
+:::{.cr-section}
+## EDS 213: Databases and Data Management
+
+*Instructors: Julien Brun, Greg Janée, Annie Adams, Renata Curty*
+
+Data management is foundational to reproducible science. This course taught relational database structure, SQL, and data archiving.
+
+<!-- ![PLACEHOLDER: Database schema diagram or ERD showing relationships between tables](images/eds213-databases.jpg) -->
+
+**Key Topics:**
+- Relational database structure and schemas
+- Data relationships and normalization
+- SQL for creating and querying databases
+- Metadata concepts and standards
+- Archiving data products on repositories
+- Making data available to broader community
+
+The course emphasized that good data management isn't just about storage—it's about making data findable, accessible, interoperable, and reusable (FAIR principles).
+:::
+
+:::{.cr-section}
+## EDS 232: Machine Learning in Environmental Science
+
+*Instructors: Carmen Galaz García, Annie Adams*
+
+Machine learning helps process big, complex data and extract knowledge. This course provided a broad introduction to ML and statistical pattern recognition.
+
+<!-- ![PLACEHOLDER: Machine learning visualization showing decision trees, random forests, or neural network architecture](images/eds232-ml.jpg) -->
+
+**Topics Covered:**
+- **Supervised Learning**: Decision trees, random forests, support vector machines, neural networks
+- **Unsupervised Learning**: Clustering, dimensionality reduction, deep learning
+- Applications framed within environmental science
+- Programming in R and Python for advanced scientific programming
+
+The course emphasized that machine learning is a tool, not a solution. Understanding when and how to apply ML methods, and interpreting results responsibly, is crucial for environmental applications.
+:::
+
+:::{.cr-section}
+## EDS 411B: Capstone Project (Part 2)
+
+*Instructor: Carmen Galaz García*
+
+The second quarter of capstone focused on completing all project plans and deliverables, developing the project repository and technical documentation, and presenting research to a general audience.
+
+<!-- ![PLACEHOLDER: Final capstone presentation slide or project deliverable screenshot](images/eds411b-completion.jpg) -->
+
+**Deliverables:**
+- Completed project implementation
+- Public GitHub repository with all code and workflows
+- Technical documentation
+- Interactive web application (Shiny app)
+- Final presentation to general audience
+- Project repository adhering to open science principles
+
+The capstone experience integrated everything learned throughout the program: technical skills, collaboration, communication, and ethical practice. It was both a culmination and a beginning—preparing us for professional careers in environmental data science.
+:::
+
+---
+
+# The Capstone: Hydropower's Low-Hanging Fruits
+
+{#cr-capstone}
+My capstone project, conducted with teammates Leela Dixit, Sofia Sarak, and Vedika Shirtekar, represents the integration of everything I learned in MEDS. In collaboration with Dr. Jeff Opperman (WWF Global Science) and Dr. Rafael Schmitt (UCSB), we developed a framework to identify sustainable pathways for hydropower development.
+
+:::{.cr-section}
+## The Environmental Challenge
+
+<!-- ![PLACEHOLDER: Global map showing river fragmentation or hydropower dam locations](images/capstone-challenge.jpg) -->
+
+Hydropower presents a fundamental dilemma: it's a low-carbon, flexible energy source that can support climate action, but dams fragment rivers, disrupt ecosystems, and impact communities. Current projections suggest we may need to double global hydropower capacity by 2050 to meet climate objectives, but 63% of the world's longest rivers are already fragmented.
+
+**The Core Question:**
+Can we identify "low-hanging fruits"—future dam sites that combine lower environmental impact with energy system benefits—to reconcile climate goals with river conservation?
+
+This question isn't just academic. It's urgent. As Dr. Opperman wrote in his letter of support: "Current high-level policy debates about hydropower's role in addressing future climate and energy challenges are not adequately considering the potential tradeoffs with hydropower expansion."
+:::
+
+:::{.cr-section}
+## Project Objectives
+
+Our project aimed to analyze sustainability constraints for expanding future hydropower by:
+
+1. **Identifying topological relationships**: Determining where future dams sit relative to existing dams (upstream, downstream, within cascades, or blocking free-flowing rivers)
+
+2. **Screening for conflicts**: Identifying "fatal flaws" such as conflicts with protected areas or population centers
+
+3. **Categorizing sustainability**: Classifying at least 3,700 global dam sites into sustainability categories
+
+4. **Quantifying capacity**: Calculating generation capacity (in gigawatts) within each category
+
+<!-- ![PLACEHOLDER: Schematic diagram showing the four sustainability categories (SI Figure 1 from proposal)](images/capstone-categories.jpg) -->
+
+The goal was to enable investors and policymakers to judge the environmental impact associated with different levels of hydropower expansion, closing a critical knowledge gap in energy systems planning.
+:::
+
+:::{.cr-section}
+## The Data Science Approach
+
+<!-- ![PLACEHOLDER: Workflow diagram showing the analytical pipeline from raw data to final outputs](images/capstone-workflow.jpg) -->
+
+**Key Datasets:**
+1. **HydroRivers**: Global vectorized river network with metadata (discharge, etc.)
+2. **GRAND**: Global Reservoir and Dam dataset (7,300 existing large dams)
+3. **FHReD**: Future Hydropower and Reservoir Data (~3,700 future dam sites)
+4. **Protected Planet**: Protected area boundaries for conflict screening
+5. **WorldPop**: Population density data for conflict screening
+
+**Analytical Tools:**
+- **sf package**: Vector data and geospatial operations
+- **tidygraph package**: Network topology and connectivity analysis
+- **riverconn package**: River fragmentation indices
+- **Shiny package**: Interactive web applications
+
+All datasets are vectorized and publicly available, enabling reproducible analysis on personal computers by processing one river basin at a time.
+:::
+
+:::{.cr-section}
+## Deliverables
+
+### Deliverable 1: Scripted Workflow
+
+A reproducible workflow to:
+- Identify topological location of future dams relative to existing dams
+- Screen for conflicts ("fatal flaws") with protected areas and population centers
+- Enable future expansion with additional data and screening criteria
+
+<!-- ![PLACEHOLDER: Screenshot of workflow code or GitHub repository structure](images/capstone-d1.jpg) -->
+
+### Deliverable 2: Updated Dataset
+
+An enhanced dataset of future dams with:
+- Sustainability category classification (within cascade, upstream/downstream, undammed river, or fatally flawed)
+- Increase in river fragmentation index for each future dam
+- Generation capacity by category
+
+<!-- ![PLACEHOLDER: Data visualization showing dam categorization results or capacity by category](images/capstone-d2.jpg) -->
+
+### Deliverable 3: Interactive Web Viewer
+
+A Shiny application enabling users to:
+- Visualize results spatially
+- Filter and analyze by country, capacity range, or sustainability category
+- Explore dam locations and their impacts
+
+<!-- ![PLACEHOLDER: Screenshot of Shiny app interface showing interactive map and filters](images/capstone-d3.jpg) -->
+:::
+
+:::{.cr-section}
+## The Research Context
+
+Our work builds on important prior research:
+
+**Schmitt & Rosa (2024)** found that:
+- Global demand for hydropower (+38%) and irrigation storage (+73%) by 2050
+- Europe and South Asia face "double deficits" where neither energy nor water needs can be met by dams alone
+- 43% of current hydropower relies on multipurpose dams, creating conflicts
+- 60-64% of remaining technical potential needed just to meet basic projections
+
+**Grill et al. (2019)** mapped the world's free-flowing rivers, showing that:
+- Only 1/3 of major rivers remain free-flowing
+- Current dam building would fragment many remaining free-flowing rivers
+- Large tropical rivers supporting productive fisheries and deltas are particularly at risk
+
+**Schmitt et al. (2019)** on the Mekong:
+- Strategic dam placement can achieve same energy with 4% sediment loss vs. 79% under business-as-usual
+- The 3S Basin (10% of land area) provides 25% of sediment—losing it is catastrophic
+- Vietnam gets 0% of new hydropower but bears 100% of geomorphic costs
+
+<!-- ![PLACEHOLDER: Map of Mekong River Basin showing dam locations and sediment flow](images/capstone-mekong.jpg) -->
+:::
+
+:::{.cr-section}
+## Key Insights and Broader Impact
+
+<!-- ![PLACEHOLDER: Final results visualization showing global patterns of sustainable vs. high-impact dam sites](images/capstone-results.jpg) -->
+
+**What Our Analysis Reveals:**
+
+1. **Spatial Patterns**: Some regions (Latin America, South Asia) have hydropower surplus relative to decarbonization needs, while others face deficits, especially where sites are in ecologically sensitive or populated areas.
+
+2. **Cascade Benefits**: Dams built within existing cascades have much lower impacts than new dams on free-flowing rivers—this is the "low-hanging fruit."
+
+3. **Conflict Identification**: Many proposed sites conflict with protected areas or population centers—these "fatal flaws" should be avoided.
+
+4. **Capacity by Category**: Understanding how much capacity exists in each sustainability category enables energy system planners to make informed decisions.
+
+**Broader Impact:**
+
+Our methods contribute to:
+- **Policy Dialogues**: Enabling global and national policy discussions based on quantitative data
+- **Energy Systems Modeling**: Straightforward integration of sustainability criteria into energy planning
+- **Accessibility**: Allowing local NGOs and citizens without resources to engage in science-informed debates
+- **Avoiding Detrimental Effects**: Helping minimize negative impacts on rivers and communities
+
+The workflow is designed to be adaptable, allowing for public expansion with additional indicators and downscaling to inform local decisions.
+:::
+
+:::{.cr-section}
+## Technical Challenges and Solutions
+
+<!-- ![PLACEHOLDER: Code snippet or technical diagram showing network analysis approach](images/capstone-technical.jpg) -->
+
+**Challenge 1: Network Topology**
+Understanding spatial relationships between dams in river networks required network analysis. We used `tidygraph` and `sfnetworks` to model river connectivity and identify cascade relationships.
+
+**Challenge 2: Scale**
+Processing global datasets with millions of river reaches required careful spatial subsetting and processing by basin. We developed workflows that could run on personal computers by processing one basin at a time.
+
+**Challenge 3: Reproducibility**
+Creating a workflow that others could use and modify required extensive documentation, modular code design, and clear data dependencies. We followed best practices from EDS 214 (workflows) throughout.
+
+**Challenge 4: Visualization**
+Communicating complex spatial and categorical information required thoughtful design. We used principles from EDS 240 (visualization) to create clear, accessible visualizations in our Shiny app.
+:::
+
+:::{.cr-section}
+## Reflection: What I Learned
+
+<!-- ![PLACEHOLDER: Personal reflection photo or team working together](images/capstone-reflection.jpg) -->
+
+The capstone project was the most challenging and rewarding experience of the MEDS program. It required:
+
+- **Integration**: Bringing together skills from every course—statistics, geospatial analysis, modeling, visualization, ethics, and more
+
+- **Collaboration**: Working effectively with teammates, clients, and advisors, following the "Ten Simple Rules" for collaborative data science
+
+- **Problem-Solving**: Tackling real-world challenges with no clear answers, requiring creativity and persistence
+
+- **Communication**: Translating technical work for diverse audiences—scientists, policymakers, and the public
+
+- **Responsibility**: Working on a project with real-world implications, requiring careful consideration of ethics and impacts
+
+The capstone wasn't just about applying what I learned—it was about learning how to learn, how to adapt, and how to contribute meaningfully to environmental problem-solving.
+:::
+
+---
+
+# Additional Courses: Specialized Skills
+
+{#cr-additional}
+Beyond the core curriculum, I took two additional courses that expanded my toolkit:
+
+:::{.cr-section}
+## EDS 231: Text and Sentiment Analysis for Environmental Problems
+
+*Instructor: Mateo Robbins*
+
+This course covered foundations and applications of natural language processing for environmental data sources.
+
+<!-- ![PLACEHOLDER: Visualization showing text analysis results, word clouds, or sentiment analysis outputs](images/eds231-text.jpg) -->
+
+**Applications:**
+- Social media feeds (e.g., Twitter) for environmental sentiment
+- Agency reports and policy documents
+- Text processing and classification
+- Semantics and natural language parsing
+
+The course showed me how text data can provide insights into public perception, policy discourse, and environmental communication.
+:::
+
+:::{.cr-section}
+## EDS 296-1S: Intro to Shiny - Building Reactive Apps and Dashboards
+
+*Instructor: Samantha Shanny-Csik*
+
+This short course taught the fundamentals of building interactive web applications with R Shiny.
+
+<!-- ![PLACEHOLDER: Screenshot of a Shiny app interface](images/eds296-shiny.jpg) -->
+
+**Key Skills:**
+- Understanding reactivity
+- Customizing user interfaces
+- Best practices and workflows
+- Deploying apps via shinyapps.io
+
+This course directly supported our capstone project, enabling us to create the interactive web viewer for our dam sustainability analysis.
+:::
+
+---
+
+# Conclusion: A Year of Growth
+
+{#cr-conclusion}
+Looking back on this year, I'm struck by how much I've learned—not just technical skills, but ways of thinking about data, science, and environmental challenges.
+
+:::{.cr-section}
+<!-- ![PLACEHOLDER: Final reflection image - perhaps a view from Bren School or a symbolic image representing the journey](images/conclusion-reflection.jpg) -->
+
+**Technical Skills:**
+- Programming in R and Python
+- Statistical analysis and inference
+- Geospatial analysis and remote sensing
+- Machine learning and modeling
+- Data visualization and communication
+- Database management and workflows
+
+**Professional Skills:**
+- Collaborative data science
+- Reproducible workflows
+- Ethical data practice
+- Policy evaluation methods
+- Scientific communication
+
+**Personal Growth:**
+- Confidence in tackling complex problems
+- Appreciation for interdisciplinary collaboration
+- Commitment to open science and reproducibility
+- Understanding of the responsibility that comes with data science
+
+The MEDS program has prepared me not just to analyze environmental data, but to do so responsibly, collaboratively, and effectively. The capstone project, in particular, showed me how all these pieces fit together to address real-world environmental challenges.
+
+As I move forward in my career, I carry with me not just technical skills, but a framework for thinking about how data science can contribute to environmental solutions. The challenges we face—climate change, biodiversity loss, resource management, environmental justice—require the kind of interdisciplinary, data-driven approach that MEDS embodies.
+
+Thank you for joining me on this journey through the Master of Environmental Data Science program. The work continues, but the foundation is strong.
+:::
+
+---
+
+# Acknowledgments
+
+This journey was made possible by:
+
+- **The Bren School faculty** who designed and taught this exceptional program
+- **NCEAS** for providing collaborative research support
+- **My capstone team**: Leela Dixit, Sofia Sarak, and Vedika Shirtekar
+- **Our capstone clients**: Dr. Jeff Opperman (WWF) and Dr. Rafael Schmitt (UCSB)
+- **My MEDS cohort** for collaboration and community
+- **The broader environmental data science community** for open science and knowledge sharing
+
+---
+
+*This document was created using Quarto's closeread-html format, which enables interactive, scrollytelling narratives. The styling matches my personal website's SCSS theme, creating a cohesive visual experience.*
+
+*All course materials, code, and project deliverables are available in public GitHub repositories, following open science principles.*

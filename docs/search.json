@@ -144,7 +144,7 @@
     "href": "posts.html",
     "title": "Lucian’s log",
     "section": "",
-    "text": "LA Fires\n\n\n\nMEDS\n\nR\n\nPython\n\n\n\nRemote sensing and equity insights for the 2025 Eaton and Palisades wildfires.\n\n\n\nLucian Blue Scher\n\n\nDec 12, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nFinding the Best Waters\n\n\n\nAquaculture\n\nMarine Science\n\nGeospatial\n\nMEDS\n\nR\n\n\n\nMapping Aquaculture Potential Along the U.S. West Coast\n\n\n\nLucian Blue Scher\n\n\nDec 12, 2025\n\n\n\n\n\n\nNo matching items"
+    "text": "My Journey Through MEDS: A Year of Environmental Data Science\n\n\n\n\n\n\nLucian Blue Scher, Lucian Scher\n\n\nFeb 12, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nLA Fires\n\n\n\nMEDS\n\nR\n\nPython\n\n\n\nRemote sensing and equity insights for the 2025 Eaton and Palisades wildfires.\n\n\n\nLucian Blue Scher\n\n\nDec 12, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nFinding the Best Waters\n\n\n\nAquaculture\n\nMarine Science\n\nGeospatial\n\nMEDS\n\nR\n\n\n\nMapping Aquaculture Potential Along the U.S. West Coast\n\n\n\nLucian Blue Scher\n\n\nDec 12, 2025\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#datasets",
@@ -193,62 +193,251 @@
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-libraries",
     "title": "LA Fires",
     "section": "Import libraries",
-    "text": "Import libraries\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport os\nimport geopandas as gpd\nimport xarray as xr\n\nimport matplotlib as mpl\nimport matplotlib.pyplot as plt\nimport contextily as ctx"
+    "text": "Import libraries"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-data",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-data",
     "title": "LA Fires",
     "section": "Import data",
-    "text": "Import data\n\n\nCode\n# Eaton fire perimeter\nfp = os.path.join('data', 'Eaton_Perimeter_20250121', 'Eaton_Perimeter_20250121.shp')\neaton = gpd.read_file(fp)\n\n# Palisades fire perimeter\nfp = os.path.join('data', 'Palisades_Perimeter_20250121', 'Palisades_Perimeter_20250121.shp')\npalisades = gpd.read_file(fp)\n\n# Landsat 8\nlandsat = xr.open_dataset(\n    \"data/landsat8-2025-02-23-palisades-eaton.nc\")\n    \n# Environmental Justice Index\neji = gpd.read_file(\"data/EJI_2024_California/EJI_2024_California.gdb\")"
+    "text": "Import data"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-perimeter-data",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-perimeter-data",
     "title": "LA Fires",
     "section": "Prepare perimeter data",
-    "text": "Prepare perimeter data\nWe start by verifying the coordinate reference system (CRS) of perimeter data and check that both are projected.\n\n\nCode\n# Fire perimeter data exploration\nprint(f\"The CRS for the Eaton Perimeter is {eaton.crs}\")\nprint(f\"The CRS for the Palisades Perimeter is {palisades.crs}\")\nprint(f\"The Eaton Perimeter is projected: {eaton.crs.is_projected}\")\nprint(f\"The Palisades Perimeter is projected: {palisades.crs.is_projected}\")\n\n\nThe CRS for the Eaton Perimeter is EPSG:3857\nThe CRS for the Palisades Perimeter is EPSG:3857\nThe Eaton Perimeter is projected: True\nThe Palisades Perimeter is projected: True\n\n\nBoth perimeters share a projected CRS and schema.\nBefore we move on lets check for no-data values in our landsat raster and remove them if they exist, confirming with an assert.\n\n\nCode\n# Fill NaNs with zero if any\nif landsat.to_array().isnull().any():\n    landsat = landsat.fillna(0)\n\n# Assert no NaNs remain\nassert not landsat.to_array().isnull().any(), \"NaNs remain after fill.\""
+    "text": "Prepare perimeter data\nWe start by verifying the coordinate reference system (CRS) of perimeter data and check that both are projected.\n\n\nThe CRS for the Eaton Perimeter is EPSG:3857\nThe CRS for the Palisades Perimeter is EPSG:3857\nThe Eaton Perimeter is projected: True\nThe Palisades Perimeter is projected: True\n\n\nBoth perimeters share a projected CRS and schema.\nBefore we move on lets check for no-data values in our landsat raster and remove them if they exist, confirming with an assert."
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-landsat-8-data",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-landsat-8-data",
     "title": "LA Fires",
     "section": "Prepare Landsat 8 data",
-    "text": "Prepare Landsat 8 data\nLandsat arrives as an xarray.Dataset with georeferencing stored in spatial_ref. Because xarray sometimes drops CRS info, we explicitly write it back so raster/vector overlays align perfectly.\n\n\nCode\n# Get the CRS of landsat\nlandsat_crs = landsat.spatial_ref.crs_wkt\n\n# Recover the geospatial information by using rio.write_crs() \nlandsat = landsat.rio.write_crs(landsat_crs)\n\n# Print the CRS of the updated dataset.\nprint(landsat.rio.crs)\n\n# Let's also match our fire perimeter data to the landsat crs\npalisades = palisades.to_crs(landsat.rio.crs)\neaton     = eaton.to_crs(landsat.rio.crs)\n\n\nEPSG:32611"
+    "text": "Prepare Landsat 8 data\nLandsat arrives as an xarray.Dataset with georeferencing stored in spatial_ref. Because xarray sometimes drops CRS info, we explicitly write it back so raster/vector overlays align perfectly.\n\n\nEPSG:32611"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#true-color-image-rendering",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#true-color-image-rendering",
     "title": "LA Fires",
     "section": "True-color image rendering",
-    "text": "True-color image rendering\nIn order to visualize the burned areas we build a true-color Landsat image by stacking the red, green, and blue bands, then filling no-data again to be certain. Casting to a float ensures safe color scaling.\n\n\nCode\n# Build and clean RGB\nrgb = landsat[[\"red\", \"green\", \"blue\"]].to_array()\nrgb = rgb.where(np.isfinite(rgb), 0).astype(float)\n\nfig, ax = plt.subplots(figsize=(8, 8))\n_ = rgb.plot.imshow(\n    ax=ax,\n    vmin=8200, vmax=13500,\n    robust=True,\n    add_colorbar=False\n)\n\n# Overlays\npalisades.boundary.plot(ax=ax, color=\"red\", linewidth=1)\neaton.boundary.plot(ax=ax, color=\"red\", linewidth=1)\n\n# Labels\np_center = palisades.geometry.centroid.iloc[0]\ne_center = eaton.geometry.centroid.iloc[0]\ndx, dy = 100, -5000\nax.text(p_center.x + dx, p_center.y + dy, \"Palisades Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\nax.text(e_center.x + dx, e_center.y + dy, \"Eaton Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\n\n# Lock view to the raster extent \nax.set_xlim(float(rgb.x.min()), float(rgb.x.max()))\nax.set_ylim(float(rgb.y.min()), float(rgb.y.max()))\n\nax.set_title(\"Landsat True Color (Palisades/Eaton)\", fontsize=12, fontweight=\"bold\")\nax.set_axis_off()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\nDespite stretching the colormap (vmin=8200, vmax=13500) to more clearly show burn scars, they still appear as subtle dark patches against the surrounding vegetation, let’s try a false-color map."
+    "text": "True-color image rendering\nIn order to visualize the burned areas we build a true-color Landsat image by stacking the red, green, and blue bands, then filling no-data again to be certain. Casting to a float ensures safe color scaling.\n\n\n\n\n\n\n\n\n\nDespite stretching the colormap (vmin=8200, vmax=13500) to more clearly show burn scars, they still appear as subtle dark patches against the surrounding vegetation, let’s try a false-color map."
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#false-color-image-rendering",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#false-color-image-rendering",
     "title": "LA Fires",
     "section": "False-Color image rendering",
-    "text": "False-Color image rendering\nA false-color rendering remaps bands to emphasize burn severity:\n\nSWIR22 as red\nNIR08 as green\nRed as blue.\n\nThis makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.\n\n\nCode\n# Build false-color stack (SWIR–NIR–Red)\nfci = landsat[[\"swir22\", \"nir08\", \"red\"]].to_array()\nfci = fci.where(np.isfinite(fci), 0).astype(float)\n\nfig, ax = plt.subplots(figsize=(8, 8))\n_ = fci.plot.imshow(\n    ax=ax,\n    vmin=7000,\n    vmax=15000,\n    robust=True,\n    add_colorbar=False\n)\n\n# Overlays\npalisades.boundary.plot(ax=ax, color=\"red\", linewidth=1)\neaton.boundary.plot(ax=ax, color=\"red\", linewidth=1)\n\n# Labels\np_center = palisades.geometry.centroid.iloc[0]\ne_center = eaton.geometry.centroid.iloc[0]\ndx, dy = 100, -5000\nax.text(p_center.x + dx, p_center.y + dy, \"Palisades Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\nax.text(e_center.x + dx, e_center.y + dy, \"Eaton Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\n\n# Lock view to raster extent\nax.set_xlim(float(fci.x.min()), float(fci.x.max()))\nax.set_ylim(float(fci.y.min()), float(fci.y.max()))\n\nax.set_title(\"Landsat False Color (Palisades/Eaton)\", fontsize=12, fontweight=\"bold\")\nax.set_axis_off()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\nSWIR–NIR–red composites render burned areas in red hues and healthy vegetation in greens, so the perimeter overlays become immediately interpretable."
+    "text": "False-Color image rendering\nA false-color rendering remaps bands to emphasize burn severity:\n\nSWIR22 as red\nNIR08 as green\nRed as blue.\n\nThis makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.\n\n\n\n\n\n\n\n\n\nSWIR–NIR–red composites render burned areas in red hues and healthy vegetation in greens, so the perimeter overlays become immediately interpretable."
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#merging",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#merging",
     "title": "LA Fires",
     "section": "Merging",
-    "text": "Merging\nGeoPandas Spatial joins sjoin isolates the tracts intersecting each fire perimeter.\n\n\nCode\n# EJI tracts overlapping Palisades\neji_pali = gpd.sjoin(\n    eji, palisades[[\"geometry\"]],\n    how=\"inner\", predicate=\"intersects\"\n).drop(columns=[\"index_right\"])\n\n# EJI tracts overlapping Eaton\neji_eat = gpd.sjoin(\n    eji, eaton[[\"geometry\"]],\n    how=\"inner\", predicate=\"intersects\"\n).drop(columns=[\"index_right\"])"
+    "text": "Merging\nGeoPandas Spatial joins sjoin isolates the tracts intersecting each fire perimeter."
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#clipping",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#clipping",
     "title": "LA Fires",
     "section": "Clipping",
-    "text": "Clipping\nGeoPandas clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting.\n\n\nCode\n# Clip EJI to Palisades\npalisades_clip = gpd.clip(eji_pali, palisades)\n\n# Clip EJI to Eaton\neaton_clip = gpd.clip(eji_eat, eaton)"
+    "text": "Clipping\nGeoPandas clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting."
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#final-visualition",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#final-visualition",
     "title": "LA Fires",
     "section": "Final visualition",
-    "text": "Final visualition\nLastly, we compare poverty exposure for the tracts inside each perimeter. The goal of this map is too compare the census tracts within each fire boundary and determine if there is economic injustice within either area.\n\n\nCode\neji_variable = \"E_POV200\"\nvmin = min(palisades_clip[eji_variable].min(), eaton_clip[eji_variable].min())\nvmax = max(palisades_clip[eji_variable].max(), eaton_clip[eji_variable].max())\ncmap = mpl.colormaps[\"YlGnBu\"]\n\nfig, (ax1, ax2) = plt.subplots(\n    1, 2, figsize=(9, 6.5), constrained_layout=True\n)\n\n# Palisades\npalisades_clip.plot(\n    column=eji_variable, cmap=cmap, vmin=vmin, vmax=vmax,\n    linewidth=0.4, edgecolor=\"0.6\", legend=False, ax=ax1\n)\nax1.set_title(\"Palisades Fire Area\", fontsize=13, fontweight=\"bold\")\nax1.axis(\"off\")\n\n# Eaton\neaton_clip.plot(\n    column=eji_variable, cmap=cmap, vmin=vmin, vmax=vmax,\n    linewidth=0.4, edgecolor=\"0.6\", legend=False, ax=ax2\n)\nax2.set_title(\"Eaton Fire Area\", fontsize=13, fontweight=\"bold\")\nax2.axis(\"off\")\n\n# Color bar\nsm = mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), cmap=cmap)\ncbar = fig.colorbar(sm, ax=[ax1, ax2], orientation=\"horizontal\", fraction=0.05, pad=0.05)\ncbar.set_label(\"Percent of persons below 200% of the federal poverty level\", fontsize=11)\n\n# Titles\nfig.suptitle(\"Poverty in Census Tracts within Palisades and Eaton Fire perimeters\",\n             fontsize=15, fontweight=\"bold\", y=0.75)\nfig.text(0.5, 0.70,\n         \"Census tracts are clipped to fire perimeters\",\n         ha=\"center\", va=\"center\", fontsize=11)\n\nplt.show()\n\n\n\n\n\n\n\n\n\nOverall, neither footprint is dominated by very high‑poverty tracts, but there’s a clear contrast: the Eaton perimeter includes a few tracts with markedly higher poverty shares (darker blues), while the Palisades tracts are mostly midrange to lower. This mirrors Los Angeles’ spatial pattern—more affluent coastal/Westside areas around Palisades versus pockets of higher economic vulnerability farther east—suggesting greater potential EJ concerns within parts of the Eaton area."
+    "text": "Final visualition\nLastly, we compare poverty exposure for the tracts inside each perimeter. The goal of this map is too compare the census tracts within each fire boundary and determine if there is economic injustice within either area.\n\n\n\n\n\n\n\n\n\nOverall, neither footprint is dominated by very high‑poverty tracts, but there’s a clear contrast: the Eaton perimeter includes a few tracts with markedly higher poverty shares (darker blues), while the Palisades tracts are mostly midrange to lower. This mirrors Los Angeles’ spatial pattern—more affluent coastal/Westside areas around Palisades versus pockets of higher economic vulnerability farther east—suggesting greater potential EJ concerns within parts of the Eaton area."
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html",
+    "href": "posts/my-MEDS-journey/index.html",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "",
+    "text": "{#cr-intro} When I began the Master of Environmental Data Science (MEDS) program at UC Santa Barbara’s Bren School, I knew I was stepping into a world where environmental science meets cutting-edge computational methods. What I didn’t fully anticipate was how profoundly this one-year intensive program would reshape my understanding of data, science, and the complex environmental challenges facing our planet.\nThis journey—from foundational mathematics to advanced machine learning, from geospatial analysis to policy evaluation—culminated in a capstone project that seeks to identify sustainable pathways for hydropower development in a net-zero future. Through this closeread document, I invite you to explore the knowledge, skills, and insights I’ve gained across thirteen core courses and a transformative capstone experience.\n\n\n\n\n\n\n\n\nThe MEDS program is designed as an intensive, one-year professional degree that bridges environmental science with data science. As a student, I was immersed in a collaborative environment supported by expert faculty from the Bren School and the National Center for Ecological Analysis & Synthesis (NCEAS). The program’s philosophy centers on using data science to advance solutions to environmental problems—a mission that resonated deeply with my own goals.\n\n\n\n\n\n\nThe MEDS curriculum is organized into four quarters, each building upon the previous:\n\nSummer Session B: Foundational skills in mathematics, workflows, Python, and scientific programming\nFall Quarter: Working with environmental datasets, statistics, geospatial analysis, and ethics\nWinter Quarter: Modeling environmental systems, data visualization, policy evaluation, and capstone initiation\nSpring Quarter: Databases, machine learning, and capstone completion\n\nEach course was designed not just to teach technical skills, but to foster a deep understanding of how data science can be responsibly applied to environmental challenges."
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#the-program-structure",
+    "href": "posts/my-MEDS-journey/index.html#the-program-structure",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "",
+    "text": "The MEDS curriculum is organized into four quarters, each building upon the previous:\n\nSummer Session B: Foundational skills in mathematics, workflows, Python, and scientific programming\nFall Quarter: Working with environmental datasets, statistics, geospatial analysis, and ethics\nWinter Quarter: Modeling environmental systems, data visualization, policy evaluation, and capstone initiation\nSpring Quarter: Databases, machine learning, and capstone completion\n\nEach course was designed not just to teach technical skills, but to foster a deep understanding of how data science can be responsibly applied to environmental challenges."
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-212-essential-math-for-environmental-data-science",
+    "href": "posts/my-MEDS-journey/index.html#eds-212-essential-math-for-environmental-data-science",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 212: Essential Math for Environmental Data Science",
+    "text": "EDS 212: Essential Math for Environmental Data Science"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-214-analytical-workflows-and-scientific-reproducibility",
+    "href": "posts/my-MEDS-journey/index.html#eds-214-analytical-workflows-and-scientific-reproducibility",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 214: Analytical Workflows and Scientific Reproducibility",
+    "text": "EDS 214: Analytical Workflows and Scientific Reproducibility"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-217-python-for-environmental-data-science",
+    "href": "posts/my-MEDS-journey/index.html#eds-217-python-for-environmental-data-science",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 217: Python for Environmental Data Science",
+    "text": "EDS 217: Python for Environmental Data Science"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-221-scientific-programming-essentials",
+    "href": "posts/my-MEDS-journey/index.html#eds-221-scientific-programming-essentials",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 221: Scientific Programming Essentials",
+    "text": "EDS 221: Scientific Programming Essentials"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-220-working-with-environmental-datasets",
+    "href": "posts/my-MEDS-journey/index.html#eds-220-working-with-environmental-datasets",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 220: Working with Environmental Datasets",
+    "text": "EDS 220: Working with Environmental Datasets"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-222-statistics-for-environmental-data-science",
+    "href": "posts/my-MEDS-journey/index.html#eds-222-statistics-for-environmental-data-science",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 222: Statistics for Environmental Data Science",
+    "text": "EDS 222: Statistics for Environmental Data Science"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-223-geospatial-analysis-and-remote-sensing",
+    "href": "posts/my-MEDS-journey/index.html#eds-223-geospatial-analysis-and-remote-sensing",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 223: Geospatial Analysis and Remote Sensing",
+    "text": "EDS 223: Geospatial Analysis and Remote Sensing"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-242-ethics-and-bias-in-environmental-data-science",
+    "href": "posts/my-MEDS-journey/index.html#eds-242-ethics-and-bias-in-environmental-data-science",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 242: Ethics and Bias in Environmental Data Science",
+    "text": "EDS 242: Ethics and Bias in Environmental Data Science"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-230-modeling-environmental-systems",
+    "href": "posts/my-MEDS-journey/index.html#eds-230-modeling-environmental-systems",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 230: Modeling Environmental Systems",
+    "text": "EDS 230: Modeling Environmental Systems"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-240-data-visualization-and-communication",
+    "href": "posts/my-MEDS-journey/index.html#eds-240-data-visualization-and-communication",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 240: Data Visualization and Communication",
+    "text": "EDS 240: Data Visualization and Communication"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-241-environmental-policy-evaluation",
+    "href": "posts/my-MEDS-journey/index.html#eds-241-environmental-policy-evaluation",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 241: Environmental Policy Evaluation",
+    "text": "EDS 241: Environmental Policy Evaluation"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-411a-capstone-project-part-1",
+    "href": "posts/my-MEDS-journey/index.html#eds-411a-capstone-project-part-1",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 411A: Capstone Project (Part 1)",
+    "text": "EDS 411A: Capstone Project (Part 1)"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-213-databases-and-data-management",
+    "href": "posts/my-MEDS-journey/index.html#eds-213-databases-and-data-management",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 213: Databases and Data Management",
+    "text": "EDS 213: Databases and Data Management"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-232-machine-learning-in-environmental-science",
+    "href": "posts/my-MEDS-journey/index.html#eds-232-machine-learning-in-environmental-science",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 232: Machine Learning in Environmental Science",
+    "text": "EDS 232: Machine Learning in Environmental Science"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-411b-capstone-project-part-2",
+    "href": "posts/my-MEDS-journey/index.html#eds-411b-capstone-project-part-2",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 411B: Capstone Project (Part 2)",
+    "text": "EDS 411B: Capstone Project (Part 2)"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#the-environmental-challenge",
+    "href": "posts/my-MEDS-journey/index.html#the-environmental-challenge",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "The Environmental Challenge",
+    "text": "The Environmental Challenge"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#project-objectives",
+    "href": "posts/my-MEDS-journey/index.html#project-objectives",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "Project Objectives",
+    "text": "Project Objectives"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#the-data-science-approach",
+    "href": "posts/my-MEDS-journey/index.html#the-data-science-approach",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "The Data Science Approach",
+    "text": "The Data Science Approach"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#deliverables",
+    "href": "posts/my-MEDS-journey/index.html#deliverables",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "Deliverables",
+    "text": "Deliverables"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#the-research-context",
+    "href": "posts/my-MEDS-journey/index.html#the-research-context",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "The Research Context",
+    "text": "The Research Context"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#key-insights-and-broader-impact",
+    "href": "posts/my-MEDS-journey/index.html#key-insights-and-broader-impact",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "Key Insights and Broader Impact",
+    "text": "Key Insights and Broader Impact"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#technical-challenges-and-solutions",
+    "href": "posts/my-MEDS-journey/index.html#technical-challenges-and-solutions",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "Technical Challenges and Solutions",
+    "text": "Technical Challenges and Solutions"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#reflection-what-i-learned",
+    "href": "posts/my-MEDS-journey/index.html#reflection-what-i-learned",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "Reflection: What I Learned",
+    "text": "Reflection: What I Learned"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-231-text-and-sentiment-analysis-for-environmental-problems",
+    "href": "posts/my-MEDS-journey/index.html#eds-231-text-and-sentiment-analysis-for-environmental-problems",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 231: Text and Sentiment Analysis for Environmental Problems",
+    "text": "EDS 231: Text and Sentiment Analysis for Environmental Problems"
+  },
+  {
+    "objectID": "posts/my-MEDS-journey/index.html#eds-296-1s-intro-to-shiny---building-reactive-apps-and-dashboards",
+    "href": "posts/my-MEDS-journey/index.html#eds-296-1s-intro-to-shiny---building-reactive-apps-and-dashboards",
+    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "section": "EDS 296-1S: Intro to Shiny - Building Reactive Apps and Dashboards",
+    "text": "EDS 296-1S: Intro to Shiny - Building Reactive Apps and Dashboards"
   }
 ]
