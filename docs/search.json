@@ -144,7 +144,7 @@
     "href": "posts.html",
     "title": "Lucian’s log",
     "section": "",
-    "text": "My Journey Through MEDS: A Year of Environmental Data Science\n\n\n\n\n\n\nLucian Blue Scher, Lucian Scher\n\n\nFeb 12, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nLA Fires\n\n\n\nMEDS\n\nR\n\nPython\n\n\n\nRemote sensing and equity insights for the 2025 Eaton and Palisades wildfires.\n\n\n\nLucian Blue Scher\n\n\nDec 12, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nFinding the Best Waters\n\n\n\nAquaculture\n\nMarine Science\n\nGeospatial\n\nMEDS\n\nR\n\n\n\nMapping Aquaculture Potential Along the U.S. West Coast\n\n\n\nLucian Blue Scher\n\n\nDec 12, 2025\n\n\n\n\n\n\nNo matching items"
+    "text": "Hydropower’s Next Chapter: Growth, Reservoirs, and Carbon\n\n\nA design-process blog post (EDS 240 FPM #4)\n\n\n\nLucian Blue Scher\n\n\nMar 9, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nLA Fires\n\n\n\nMEDS\n\nR\n\nPython\n\n\n\nRemote sensing and equity insights for the 2025 Eaton and Palisades wildfires.\n\n\n\nLucian Blue Scher\n\n\nDec 12, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nFinding the Best Waters\n\n\n\nAquaculture\n\nMarine Science\n\nGeospatial\n\nMEDS\n\nR\n\n\n\nMapping Aquaculture Potential Along the U.S. West Coast\n\n\n\nLucian Blue Scher\n\n\nDec 12, 2025\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#datasets",
@@ -193,251 +193,104 @@
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-libraries",
     "title": "LA Fires",
     "section": "Import libraries",
-    "text": "Import libraries"
+    "text": "Import libraries\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport os\nimport geopandas as gpd\nimport xarray as xr\n\nimport matplotlib as mpl\nimport matplotlib.pyplot as plt\nimport contextily as ctx"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-data",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#import-data",
     "title": "LA Fires",
     "section": "Import data",
-    "text": "Import data"
+    "text": "Import data\n\n\nCode\n# Eaton fire perimeter\nfp = os.path.join('data', 'Eaton_Perimeter_20250121', 'Eaton_Perimeter_20250121.shp')\neaton = gpd.read_file(fp)\n\n# Palisades fire perimeter\nfp = os.path.join('data', 'Palisades_Perimeter_20250121', 'Palisades_Perimeter_20250121.shp')\npalisades = gpd.read_file(fp)\n\n# Landsat 8\nlandsat = xr.open_dataset(\n    \"data/landsat8-2025-02-23-palisades-eaton.nc\")\n    \n# Environmental Justice Index\neji = gpd.read_file(\"data/EJI_2024_California/EJI_2024_California.gdb\")"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-perimeter-data",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-perimeter-data",
     "title": "LA Fires",
     "section": "Prepare perimeter data",
-    "text": "Prepare perimeter data\nWe start by verifying the coordinate reference system (CRS) of perimeter data and check that both are projected.\n\n\nThe CRS for the Eaton Perimeter is EPSG:3857\nThe CRS for the Palisades Perimeter is EPSG:3857\nThe Eaton Perimeter is projected: True\nThe Palisades Perimeter is projected: True\n\n\nBoth perimeters share a projected CRS and schema.\nBefore we move on lets check for no-data values in our landsat raster and remove them if they exist, confirming with an assert."
+    "text": "Prepare perimeter data\nWe start by verifying the coordinate reference system (CRS) of perimeter data and check that both are projected.\n\n\nCode\n# Fire perimeter data exploration\nprint(f\"The CRS for the Eaton Perimeter is {eaton.crs}\")\nprint(f\"The CRS for the Palisades Perimeter is {palisades.crs}\")\nprint(f\"The Eaton Perimeter is projected: {eaton.crs.is_projected}\")\nprint(f\"The Palisades Perimeter is projected: {palisades.crs.is_projected}\")\n\n\nThe CRS for the Eaton Perimeter is EPSG:3857\nThe CRS for the Palisades Perimeter is EPSG:3857\nThe Eaton Perimeter is projected: True\nThe Palisades Perimeter is projected: True\n\n\nBoth perimeters share a projected CRS and schema.\nBefore we move on lets check for no-data values in our landsat raster and remove them if they exist, confirming with an assert.\n\n\nCode\n# Fill NaNs with zero if any\nif landsat.to_array().isnull().any():\n    landsat = landsat.fillna(0)\n\n# Assert no NaNs remain\nassert not landsat.to_array().isnull().any(), \"NaNs remain after fill.\""
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-landsat-8-data",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#prepare-landsat-8-data",
     "title": "LA Fires",
     "section": "Prepare Landsat 8 data",
-    "text": "Prepare Landsat 8 data\nLandsat arrives as an xarray.Dataset with georeferencing stored in spatial_ref. Because xarray sometimes drops CRS info, we explicitly write it back so raster/vector overlays align perfectly.\n\n\nEPSG:32611"
+    "text": "Prepare Landsat 8 data\nLandsat arrives as an xarray.Dataset with georeferencing stored in spatial_ref. Because xarray sometimes drops CRS info, we explicitly write it back so raster/vector overlays align perfectly.\n\n\nCode\n# Get the CRS of landsat\nlandsat_crs = landsat.spatial_ref.crs_wkt\n\n# Recover the geospatial information by using rio.write_crs() \nlandsat = landsat.rio.write_crs(landsat_crs)\n\n# Print the CRS of the updated dataset.\nprint(landsat.rio.crs)\n\n# Let's also match our fire perimeter data to the landsat crs\npalisades = palisades.to_crs(landsat.rio.crs)\neaton     = eaton.to_crs(landsat.rio.crs)\n\n\nEPSG:32611"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#true-color-image-rendering",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#true-color-image-rendering",
     "title": "LA Fires",
     "section": "True-color image rendering",
-    "text": "True-color image rendering\nIn order to visualize the burned areas we build a true-color Landsat image by stacking the red, green, and blue bands, then filling no-data again to be certain. Casting to a float ensures safe color scaling.\n\n\n\n\n\n\n\n\n\nDespite stretching the colormap (vmin=8200, vmax=13500) to more clearly show burn scars, they still appear as subtle dark patches against the surrounding vegetation, let’s try a false-color map."
+    "text": "True-color image rendering\nIn order to visualize the burned areas we build a true-color Landsat image by stacking the red, green, and blue bands, then filling no-data again to be certain. Casting to a float ensures safe color scaling.\n\n\nCode\n# Build and clean RGB\nrgb = landsat[[\"red\", \"green\", \"blue\"]].to_array()\nrgb = rgb.where(np.isfinite(rgb), 0).astype(float)\n\nfig, ax = plt.subplots(figsize=(8, 8))\n_ = rgb.plot.imshow(\n    ax=ax,\n    vmin=8200, vmax=13500,\n    robust=True,\n    add_colorbar=False\n)\n\n# Overlays\npalisades.boundary.plot(ax=ax, color=\"red\", linewidth=1)\neaton.boundary.plot(ax=ax, color=\"red\", linewidth=1)\n\n# Labels\np_center = palisades.geometry.centroid.iloc[0]\ne_center = eaton.geometry.centroid.iloc[0]\ndx, dy = 100, -5000\nax.text(p_center.x + dx, p_center.y + dy, \"Palisades Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\nax.text(e_center.x + dx, e_center.y + dy, \"Eaton Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\n\n# Lock view to the raster extent \nax.set_xlim(float(rgb.x.min()), float(rgb.x.max()))\nax.set_ylim(float(rgb.y.min()), float(rgb.y.max()))\n\nax.set_title(\"Landsat True Color (Palisades/Eaton)\", fontsize=12, fontweight=\"bold\")\nax.set_axis_off()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\nDespite stretching the colormap (vmin=8200, vmax=13500) to more clearly show burn scars, they still appear as subtle dark patches against the surrounding vegetation, let’s try a false-color map."
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#false-color-image-rendering",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#false-color-image-rendering",
     "title": "LA Fires",
     "section": "False-Color image rendering",
-    "text": "False-Color image rendering\nA false-color rendering remaps bands to emphasize burn severity:\n\nSWIR22 as red\nNIR08 as green\nRed as blue.\n\nThis makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.\n\n\n\n\n\n\n\n\n\nSWIR–NIR–red composites render burned areas in red hues and healthy vegetation in greens, so the perimeter overlays become immediately interpretable."
+    "text": "False-Color image rendering\nA false-color rendering remaps bands to emphasize burn severity:\n\nSWIR22 as red\nNIR08 as green\nRed as blue.\n\nThis makes burned areas stand out more clearly. We then reproject the fire perimeters to the Landsat CRS, overlay them in red, and label each fire so the false-color composite directly highlights where and how severely the Palisades and Eaton fires affected the landscape.\n\n\nCode\n# Build false-color stack (SWIR–NIR–Red)\nfci = landsat[[\"swir22\", \"nir08\", \"red\"]].to_array()\nfci = fci.where(np.isfinite(fci), 0).astype(float)\n\nfig, ax = plt.subplots(figsize=(8, 8))\n_ = fci.plot.imshow(\n    ax=ax,\n    vmin=7000,\n    vmax=15000,\n    robust=True,\n    add_colorbar=False\n)\n\n# Overlays\npalisades.boundary.plot(ax=ax, color=\"red\", linewidth=1)\neaton.boundary.plot(ax=ax, color=\"red\", linewidth=1)\n\n# Labels\np_center = palisades.geometry.centroid.iloc[0]\ne_center = eaton.geometry.centroid.iloc[0]\ndx, dy = 100, -5000\nax.text(p_center.x + dx, p_center.y + dy, \"Palisades Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\nax.text(e_center.x + dx, e_center.y + dy, \"Eaton Fire\",\n        color=\"black\", fontsize=10, ha=\"left\", va=\"center\",\n        bbox=dict(facecolor=\"white\", edgecolor=\"black\", boxstyle=\"round,pad=0.2\", alpha=0.8))\n\n# Lock view to raster extent\nax.set_xlim(float(fci.x.min()), float(fci.x.max()))\nax.set_ylim(float(fci.y.min()), float(fci.y.max()))\n\nax.set_title(\"Landsat False Color (Palisades/Eaton)\", fontsize=12, fontweight=\"bold\")\nax.set_axis_off()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\nSWIR–NIR–red composites render burned areas in red hues and healthy vegetation in greens, so the perimeter overlays become immediately interpretable."
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#merging",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#merging",
     "title": "LA Fires",
     "section": "Merging",
-    "text": "Merging\nGeoPandas Spatial joins sjoin isolates the tracts intersecting each fire perimeter."
+    "text": "Merging\nGeoPandas Spatial joins sjoin isolates the tracts intersecting each fire perimeter.\n\n\nCode\n# EJI tracts overlapping Palisades\neji_pali = gpd.sjoin(\n    eji, palisades[[\"geometry\"]],\n    how=\"inner\", predicate=\"intersects\"\n).drop(columns=[\"index_right\"])\n\n# EJI tracts overlapping Eaton\neji_eat = gpd.sjoin(\n    eji, eaton[[\"geometry\"]],\n    how=\"inner\", predicate=\"intersects\"\n).drop(columns=[\"index_right\"])"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#clipping",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#clipping",
     "title": "LA Fires",
     "section": "Clipping",
-    "text": "Clipping\nGeoPandas clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting."
+    "text": "Clipping\nGeoPandas clipping cuts the tracts to the fire perimeter boundary vector lines. Think cookie cutting.\n\n\nCode\n# Clip EJI to Palisades\npalisades_clip = gpd.clip(eji_pali, palisades)\n\n# Clip EJI to Eaton\neaton_clip = gpd.clip(eji_eat, eaton)"
   },
   {
     "objectID": "posts/220final_LAfires_AZbiodiversity_blog/index.html#final-visualition",
     "href": "posts/220final_LAfires_AZbiodiversity_blog/index.html#final-visualition",
     "title": "LA Fires",
     "section": "Final visualition",
-    "text": "Final visualition\nLastly, we compare poverty exposure for the tracts inside each perimeter. The goal of this map is too compare the census tracts within each fire boundary and determine if there is economic injustice within either area.\n\n\n\n\n\n\n\n\n\nOverall, neither footprint is dominated by very high‑poverty tracts, but there’s a clear contrast: the Eaton perimeter includes a few tracts with markedly higher poverty shares (darker blues), while the Palisades tracts are mostly midrange to lower. This mirrors Los Angeles’ spatial pattern—more affluent coastal/Westside areas around Palisades versus pockets of higher economic vulnerability farther east—suggesting greater potential EJ concerns within parts of the Eaton area."
+    "text": "Final visualition\nLastly, we compare poverty exposure for the tracts inside each perimeter. The goal of this map is too compare the census tracts within each fire boundary and determine if there is economic injustice within either area.\n\n\nCode\neji_variable = \"E_POV200\"\nvmin = min(palisades_clip[eji_variable].min(), eaton_clip[eji_variable].min())\nvmax = max(palisades_clip[eji_variable].max(), eaton_clip[eji_variable].max())\ncmap = mpl.colormaps[\"YlGnBu\"]\n\nfig, (ax1, ax2) = plt.subplots(\n    1, 2, figsize=(9, 6.5), constrained_layout=True\n)\n\n# Palisades\npalisades_clip.plot(\n    column=eji_variable, cmap=cmap, vmin=vmin, vmax=vmax,\n    linewidth=0.4, edgecolor=\"0.6\", legend=False, ax=ax1\n)\nax1.set_title(\"Palisades Fire Area\", fontsize=13, fontweight=\"bold\")\nax1.axis(\"off\")\n\n# Eaton\neaton_clip.plot(\n    column=eji_variable, cmap=cmap, vmin=vmin, vmax=vmax,\n    linewidth=0.4, edgecolor=\"0.6\", legend=False, ax=ax2\n)\nax2.set_title(\"Eaton Fire Area\", fontsize=13, fontweight=\"bold\")\nax2.axis(\"off\")\n\n# Color bar\nsm = mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), cmap=cmap)\ncbar = fig.colorbar(sm, ax=[ax1, ax2], orientation=\"horizontal\", fraction=0.05, pad=0.05)\ncbar.set_label(\"Percent of persons below 200% of the federal poverty level\", fontsize=11)\n\n# Titles\nfig.suptitle(\"Poverty in Census Tracts within Palisades and Eaton Fire perimeters\",\n             fontsize=15, fontweight=\"bold\", y=0.75)\nfig.text(0.5, 0.70,\n         \"Census tracts are clipped to fire perimeters\",\n         ha=\"center\", va=\"center\", fontsize=11)\n\nplt.show()\n\n\n\n\n\n\n\n\n\nOverall, neither footprint is dominated by very high‑poverty tracts, but there’s a clear contrast: the Eaton perimeter includes a few tracts with markedly higher poverty shares (darker blues), while the Palisades tracts are mostly midrange to lower. This mirrors Los Angeles’ spatial pattern—more affluent coastal/Westside areas around Palisades versus pockets of higher economic vulnerability farther east—suggesting greater potential EJ concerns within parts of the Eaton area."
   },
   {
-    "objectID": "posts/my-MEDS-journey/index.html",
-    "href": "posts/my-MEDS-journey/index.html",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "objectID": "posts/hydro_infographic/index.html",
+    "href": "posts/hydro_infographic/index.html",
+    "title": "Hydropower’s Next Chapter: Growth, Reservoirs, and Carbon",
     "section": "",
-    "text": "{#cr-intro} When I began the Master of Environmental Data Science (MEDS) program at UC Santa Barbara’s Bren School, I knew I was stepping into a world where environmental science meets cutting-edge computational methods. What I didn’t fully anticipate was how profoundly this one-year intensive program would reshape my understanding of data, science, and the complex environmental challenges facing our planet.\nThis journey—from foundational mathematics to advanced machine learning, from geospatial analysis to policy evaluation—culminated in a capstone project that seeks to identify sustainable pathways for hydropower development in a net-zero future. Through this closeread document, I invite you to explore the knowledge, skills, and insights I’ve gained across thirteen core courses and a transformative capstone experience.\n\n\n\n\n\n\n\n\nThe MEDS program is designed as an intensive, one-year professional degree that bridges environmental science with data science. As a student, I was immersed in a collaborative environment supported by expert faculty from the Bren School and the National Center for Ecological Analysis & Synthesis (NCEAS). The program’s philosophy centers on using data science to advance solutions to environmental problems—a mission that resonated deeply with my own goals.\n\n\n\n\n\n\nThe MEDS curriculum is organized into four quarters, each building upon the previous:\n\nSummer Session B: Foundational skills in mathematics, workflows, Python, and scientific programming\nFall Quarter: Working with environmental datasets, statistics, geospatial analysis, and ethics\nWinter Quarter: Modeling environmental systems, data visualization, policy evaluation, and capstone initiation\nSpring Quarter: Databases, machine learning, and capstone completion\n\nEach course was designed not just to teach technical skills, but to foster a deep understanding of how data science can be responsibly applied to environmental challenges."
+    "text": "Hydropower is the world’s largest renewable electricity source—but the push to expand it collides with a less-visible reality: reservoirs emit greenhouse gases, and those emissions vary wildly by location and design.\nMy goal with this infographic is to make one planning-focused message clear for a broad audience:\n\nHydropower can support net zero, but only if the buildout is steered toward lower-impact designs and locations.\n\n\n\n\n\nIEA Net Zero by 2050 (NZE) (data/NZE2021_AnnexA.csv)\n\nThe “hydro must double by 2050” framing (capacity / generation targets).\n\nSoued et al. (2022), Nature Geoscience (data/moesm.xlsx)\n\nGlobal reservoir area + emissions pathways (CO(_2), CH(_4)) and radiative forcing over time.\nKey nuance: this is all reservoirs globally, not hydropower-only.\n\nLi & He (2022), Renewable and Sustainable Energy Reviews\n\nSummarized carbon intensity patterns (e.g., shallow + eutrophic reservoirs trend higher).\nUsed to compare against an **80 kg CO(_2)e/MWh** “low-carbon” target and show how many projects exceed it.\n\nFHReD (Zarfl et al. 2015) future dams database\n\ndata/FHReD_2015_future_dams_Zarfl_et_al_beta_version/FHReD_2015_future_dams_Zarfl_et_al_beta_version.xlsx\n()3,700 future projects with capacity, basin, country/continent, stage, timing, and coordinates.\nUsed for “pipeline” visuals: where future capacity is concentrated (basins/regions/size).\n\nOWID (Our World in Data) (data/hydropower-generation/, data/share-electricity-hydro/)\n\nHistorical generation and share context for timeline-style panels.\n\n\n\n\n\nBelow are two component visuals rendered directly in this post.\n\n\n\n\nShow code\nlibrary(haven)\nlibrary(lubridate)\n\ndta &lt;- read_dta(here::here(\"posts/hydro_infographic/data/marginal-generation-offsets-data.dta\"))\n\ninner_radius &lt;- 1.5\n\ninner_month &lt;- dta %&gt;%\n  mutate(\n    month_num = month(dt),\n    month_lab = factor(month.abb[month_num], levels = month.abb)\n  ) %&gt;%\n  group_by(month_lab) %&gt;%\n  summarise(h_mean = mean(h, na.rm = TRUE), .groups = \"drop\") %&gt;%\n  mutate(h_norm = h_mean / max(h_mean, na.rm = TRUE))\n\nmonth_slots &lt;- tibble(\n  month_lab = factor(month.abb, levels = month.abb),\n  x_center  = seq(1, 23, by = 2)\n)\n\ninner_month_long &lt;- inner_month %&gt;% inner_join(month_slots, by = \"month_lab\")\n\nouter_hour &lt;- dta %&gt;%\n  mutate(hour = hour(dt)) %&gt;%\n  group_by(hour) %&gt;%\n  summarise(h_mean = mean(h, na.rm = TRUE), .groups = \"drop\") %&gt;%\n  mutate(\n    h_norm   = h_mean / max(h_mean, na.rm = TRUE),\n    hour_rot = (hour - 12) %% 24,\n    inner_r  = inner_radius + 0.1,\n    outer_r  = inner_r + 0.9 * h_norm\n  )\n\nlabel_r &lt;- inner_radius + 1.15\ntime_labels &lt;- tibble(\n  hour_rot = c(0, 6, 12, 18),\n  label = c(\"12pm\", \"6pm\", \"12am\", \"6am\"),\n  hjust = c(0.5, -0.1, 0.5, 1.1),\n  vjust = c(-0.5, 0.5, 1.2, 0.5)\n)\n\nmonth_labels &lt;- tibble(\n  x_center = c(1, 7, 13, 19),\n  y_pos = inner_radius * 0.6,\n  label = c(\"Jan\", \"Apr\", \"Jul\", \"Oct\")\n)\n\nggplot() +\n  geom_col(\n    data = inner_month_long,\n    aes(x = x_center, y = inner_radius, fill = h_norm),\n    width = 2,\n    color = NA\n  ) +\n  geom_segment(\n    data = outer_hour,\n    aes(x = hour_rot, xend = hour_rot, y = inner_r, yend = outer_r, color = h_norm),\n    lineend = \"round\",\n    linewidth = 1.0,\n    alpha = 0.9\n  ) +\n  geom_text(\n    data = time_labels,\n    aes(x = hour_rot, y = label_r, label = label),\n    hjust = time_labels$hjust,\n    vjust = time_labels$vjust,\n    size = 2.8,\n    color = \"gray40\"\n  ) +\n  geom_text(\n    data = month_labels,\n    aes(x = x_center, y = y_pos, label = label),\n    size = 2.5,\n    color = \"gray50\"\n  ) +\n  coord_polar(theta = \"x\", start = 0) +\n  scale_colour_gradientn(\n    colours = c(\"#fff7bc\", \"#fee391\", \"#fec44f\", \"#fe9929\", \"#d95f0e\", \"#993404\"),\n    name = \"Avg hydropower\\n(normalized)\"\n  ) +\n  scale_fill_gradientn(\n    colours = c(\"#fff7bc\", \"#fee391\", \"#fec44f\", \"#fe9929\", \"#d95f0e\", \"#993404\"),\n    guide = \"none\"\n  ) +\n  scale_y_continuous(limits = c(0, inner_radius + 1.3), breaks = NULL) +\n  labs(\n    title = NULL,\n    subtitle = NULL,\n    x = NULL,\n    y = NULL\n  ) +\n  theme_minimal(base_size = 11) +\n  theme(\n    legend.position = \"right\",\n    axis.text = element_blank(),\n    axis.ticks = element_blank(),\n    panel.grid.minor = element_blank(),\n    panel.grid.major = element_blank()\n  )\n\n\n\n\n\n\n\n\nFigure 1: Hydropower “sun”: months at the core, hours as corona (regional example). Brighter = more generation.\n\n\n\n\n\n\n\n\n\n\nShow code\nlibrary(readxl)\nlibrary(networkD3)\nlibrary(htmlwidgets)\nlibrary(htmltools)\n\nfuture &lt;- read_xlsx(\n  here(\"posts/hydro_infographic/data/FHReD_2015_future_dams_Zarfl_et_al_beta_version/FHReD_2015_future_dams_Zarfl_et_al_beta_version.xlsx\"),\n  sheet = 2\n)\n\ncontinent_mw &lt;- future %&gt;%\n  filter(!is.na(`Capacity (MW)`), !is.na(Continent)) %&gt;%\n  group_by(Continent) %&gt;%\n  summarise(mw = sum(`Capacity (MW)`, na.rm = TRUE), .groups = \"drop\") %&gt;%\n  arrange(desc(mw))\n\nbasin_mw &lt;- future %&gt;%\n  filter(!is.na(`Capacity (MW)`), !is.na(`Major Basin`), !is.na(Continent)) %&gt;%\n  group_by(Continent, `Major Basin`) %&gt;%\n  summarise(mw = sum(`Capacity (MW)`, na.rm = TRUE), .groups = \"drop\")\n\ntop_basins_per_continent &lt;- basin_mw %&gt;%\n  group_by(Continent) %&gt;%\n  slice_max(mw, n = 3) %&gt;%\n  pull(`Major Basin`)\n\nbasin_tab &lt;- basin_mw %&gt;%\n  mutate(\n    basin_group = if_else(\n      `Major Basin` %in% top_basins_per_continent,\n      `Major Basin`,\n      paste0(\"Other (\", Continent, \")\")\n    )\n  ) %&gt;%\n  group_by(Continent, basin_group) %&gt;%\n  summarise(mw = sum(mw), .groups = \"drop\") %&gt;%\n  arrange(Continent, desc(mw))\n\ntrunk_node &lt;- data.frame(name = \"Global hydropower pipeline\")\ncontinent_nodes &lt;- data.frame(name = continent_mw$Continent)\nbasin_nodes &lt;- data.frame(name = unique(basin_tab$basin_group))\n\nnodes &lt;- bind_rows(trunk_node, continent_nodes, basin_nodes)\nnodes$id &lt;- seq_len(nrow(nodes)) - 1\n\nget_id &lt;- function(nm) nodes$id[nodes$name == nm]\n\nlinks_tier1 &lt;- continent_mw %&gt;%\n  mutate(\n    source = get_id(\"Global hydropower pipeline\"),\n    target = purrr::map_int(Continent, get_id),\n    value  = mw\n  ) %&gt;%\n  select(source, target, value)\n\nlinks_tier2 &lt;- basin_tab %&gt;%\n  mutate(\n    source = purrr::map_int(Continent, get_id),\n    target = purrr::map_int(basin_group, get_id),\n    value  = mw\n  ) %&gt;%\n  select(source, target, value)\n\nlinks &lt;- bind_rows(links_tier1, links_tier2) %&gt;%\n  mutate(across(c(source, target), as.integer))\n\nsn &lt;- sankeyNetwork(\n  Links       = as.data.frame(links),\n  Nodes       = as.data.frame(nodes),\n  Source      = \"source\",\n  Target      = \"target\",\n  Value       = \"value\",\n  NodeID      = \"name\",\n  units       = \"MW\",\n  fontSize    = 12,\n  nodeWidth   = 25,\n  nodePadding = 15,\n  sinksRight  = TRUE,\n  width       = 900,\n  height      = 600\n)\n\nsn &lt;- htmlwidgets::onRender(sn, '\n  function(el, x) {\n    d3.select(el).selectAll(\".node rect\")\n      .style(\"fill\", \"black\")\n      .style(\"stroke\", \"none\");\n\n    d3.select(el).selectAll(\".node text\")\n      .style(\"font-family\", \"sans-serif\")\n      .style(\"font-size\", \"11px\")\n      .style(\"fill\", \"black\");\n\n    d3.select(el).selectAll(\".link\")\n      .style(\"stroke\", \"#000\")\n      .style(\"stroke-opacity\", 0.35);\n  }\n')\n\nsn\n\n\n\n\n\n\n\n\nFigure 2: Future hydropower pipeline (FHReD): global trunk → continents → major basins (top 3 per continent). Width = planned capacity (MW).\n\n\n\n\nOther key graphs to be included cover:\n\nHydro must double (IEA NZE)\n**CO(_2) → CH(_4)** pathway shift + decoupling (Soued)\nCarbon intensity risk patterns + share failing 80 kg target (Li & He)\nFuture hydro pipeline by basin/region (FHReD)\nA “river timeline” concept that stitches multiple threads into one narrative\n\n\n\n\n\n\nGraphic formTextThemesColorsTypographyGeneral designContextualizing dataCentering the primary messageAccessibilityDEI lens\n\n\nI mix familiar forms (bubbles, stacked areas, dot/threshold comparisons) with more narrative shapes (the “river timeline”) to guide attention without overwhelming readers.\n\n\nShort titles and direct annotations do most of the work. I’m aiming for “readable at poster distance,” with extra detail pushed into captions.\n\n\nMinimal themes throughout: few gridlines, intentional whitespace, and consistent margins so panels can be assembled cleanly in a layout tool.\n\n\nA consistent palette is defined in final_graphics/style.md. I keep most marks monochrome and use color as an accent when it adds meaning (not decoration).\n\n\nSimple, legible sans-serif choices; consistent hierarchy (title &gt; subtitle &gt; annotation &gt; caption). I avoid dense paragraphs inside plots.\n\n\nI’m prioritizing: visual hierarchy, alignment, and “data-ink” efficiency. Several panels also have “plain/minimal” variants intended as background textures.\n\n\nI will add just enough context to avoid misinterpretation\n\n\nThe narrative is structured as:\n\nNeed (NZE doubling) → tradeoff (reservoir emissions) → variability (CI differs by conditions) → where (future pipeline) → so what (planning lens).\n\n\n\nHigh-contrast designs, readable labels, and clear figure alt text. I also rewrote scientific notation (e.g., “Reservoir area (100,000 km(^2))”) to reduce jargon.\n\n\nFuture dams intersect with people and places. I’m working to avoid “inevitable expansion” framing and instead emphasize decision points (siting, design, governance) and who bears impacts.\n\n\n\n\n\n\nHydropower can meaningfully contribute to net zero, but where and how we build the next wave of dams determines whether climate gains come with avoidable social and ecological costs."
   },
   {
-    "objectID": "posts/my-MEDS-journey/index.html#the-program-structure",
-    "href": "posts/my-MEDS-journey/index.html#the-program-structure",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
+    "objectID": "posts/hydro_infographic/index.html#why-i-made-this",
+    "href": "posts/hydro_infographic/index.html#why-i-made-this",
+    "title": "Hydropower’s Next Chapter: Growth, Reservoirs, and Carbon",
     "section": "",
-    "text": "The MEDS curriculum is organized into four quarters, each building upon the previous:\n\nSummer Session B: Foundational skills in mathematics, workflows, Python, and scientific programming\nFall Quarter: Working with environmental datasets, statistics, geospatial analysis, and ethics\nWinter Quarter: Modeling environmental systems, data visualization, policy evaluation, and capstone initiation\nSpring Quarter: Databases, machine learning, and capstone completion\n\nEach course was designed not just to teach technical skills, but to foster a deep understanding of how data science can be responsibly applied to environmental challenges."
+    "text": "Hydropower is the world’s largest renewable electricity source—but the push to expand it collides with a less-visible reality: reservoirs emit greenhouse gases, and those emissions vary wildly by location and design.\nMy goal with this infographic is to make one planning-focused message clear for a broad audience:\n\nHydropower can support net zero, but only if the buildout is steered toward lower-impact designs and locations."
   },
   {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-212-essential-math-for-environmental-data-science",
-    "href": "posts/my-MEDS-journey/index.html#eds-212-essential-math-for-environmental-data-science",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 212: Essential Math for Environmental Data Science",
-    "text": "EDS 212: Essential Math for Environmental Data Science"
+    "objectID": "posts/hydro_infographic/index.html#data-and-what-each-source-adds",
+    "href": "posts/hydro_infographic/index.html#data-and-what-each-source-adds",
+    "title": "Hydropower’s Next Chapter: Growth, Reservoirs, and Carbon",
+    "section": "",
+    "text": "IEA Net Zero by 2050 (NZE) (data/NZE2021_AnnexA.csv)\n\nThe “hydro must double by 2050” framing (capacity / generation targets).\n\nSoued et al. (2022), Nature Geoscience (data/moesm.xlsx)\n\nGlobal reservoir area + emissions pathways (CO(_2), CH(_4)) and radiative forcing over time.\nKey nuance: this is all reservoirs globally, not hydropower-only.\n\nLi & He (2022), Renewable and Sustainable Energy Reviews\n\nSummarized carbon intensity patterns (e.g., shallow + eutrophic reservoirs trend higher).\nUsed to compare against an **80 kg CO(_2)e/MWh** “low-carbon” target and show how many projects exceed it.\n\nFHReD (Zarfl et al. 2015) future dams database\n\ndata/FHReD_2015_future_dams_Zarfl_et_al_beta_version/FHReD_2015_future_dams_Zarfl_et_al_beta_version.xlsx\n()3,700 future projects with capacity, basin, country/continent, stage, timing, and coordinates.\nUsed for “pipeline” visuals: where future capacity is concentrated (basins/regions/size).\n\nOWID (Our World in Data) (data/hydropower-generation/, data/share-electricity-hydro/)\n\nHistorical generation and share context for timeline-style panels."
   },
   {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-214-analytical-workflows-and-scientific-reproducibility",
-    "href": "posts/my-MEDS-journey/index.html#eds-214-analytical-workflows-and-scientific-reproducibility",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 214: Analytical Workflows and Scientific Reproducibility",
-    "text": "EDS 214: Analytical Workflows and Scientific Reproducibility"
+    "objectID": "posts/hydro_infographic/index.html#progress-snapshots-component-visuals",
+    "href": "posts/hydro_infographic/index.html#progress-snapshots-component-visuals",
+    "title": "Hydropower’s Next Chapter: Growth, Reservoirs, and Carbon",
+    "section": "",
+    "text": "Below are two component visuals rendered directly in this post.\n\n\n\n\nShow code\nlibrary(haven)\nlibrary(lubridate)\n\ndta &lt;- read_dta(here::here(\"posts/hydro_infographic/data/marginal-generation-offsets-data.dta\"))\n\ninner_radius &lt;- 1.5\n\ninner_month &lt;- dta %&gt;%\n  mutate(\n    month_num = month(dt),\n    month_lab = factor(month.abb[month_num], levels = month.abb)\n  ) %&gt;%\n  group_by(month_lab) %&gt;%\n  summarise(h_mean = mean(h, na.rm = TRUE), .groups = \"drop\") %&gt;%\n  mutate(h_norm = h_mean / max(h_mean, na.rm = TRUE))\n\nmonth_slots &lt;- tibble(\n  month_lab = factor(month.abb, levels = month.abb),\n  x_center  = seq(1, 23, by = 2)\n)\n\ninner_month_long &lt;- inner_month %&gt;% inner_join(month_slots, by = \"month_lab\")\n\nouter_hour &lt;- dta %&gt;%\n  mutate(hour = hour(dt)) %&gt;%\n  group_by(hour) %&gt;%\n  summarise(h_mean = mean(h, na.rm = TRUE), .groups = \"drop\") %&gt;%\n  mutate(\n    h_norm   = h_mean / max(h_mean, na.rm = TRUE),\n    hour_rot = (hour - 12) %% 24,\n    inner_r  = inner_radius + 0.1,\n    outer_r  = inner_r + 0.9 * h_norm\n  )\n\nlabel_r &lt;- inner_radius + 1.15\ntime_labels &lt;- tibble(\n  hour_rot = c(0, 6, 12, 18),\n  label = c(\"12pm\", \"6pm\", \"12am\", \"6am\"),\n  hjust = c(0.5, -0.1, 0.5, 1.1),\n  vjust = c(-0.5, 0.5, 1.2, 0.5)\n)\n\nmonth_labels &lt;- tibble(\n  x_center = c(1, 7, 13, 19),\n  y_pos = inner_radius * 0.6,\n  label = c(\"Jan\", \"Apr\", \"Jul\", \"Oct\")\n)\n\nggplot() +\n  geom_col(\n    data = inner_month_long,\n    aes(x = x_center, y = inner_radius, fill = h_norm),\n    width = 2,\n    color = NA\n  ) +\n  geom_segment(\n    data = outer_hour,\n    aes(x = hour_rot, xend = hour_rot, y = inner_r, yend = outer_r, color = h_norm),\n    lineend = \"round\",\n    linewidth = 1.0,\n    alpha = 0.9\n  ) +\n  geom_text(\n    data = time_labels,\n    aes(x = hour_rot, y = label_r, label = label),\n    hjust = time_labels$hjust,\n    vjust = time_labels$vjust,\n    size = 2.8,\n    color = \"gray40\"\n  ) +\n  geom_text(\n    data = month_labels,\n    aes(x = x_center, y = y_pos, label = label),\n    size = 2.5,\n    color = \"gray50\"\n  ) +\n  coord_polar(theta = \"x\", start = 0) +\n  scale_colour_gradientn(\n    colours = c(\"#fff7bc\", \"#fee391\", \"#fec44f\", \"#fe9929\", \"#d95f0e\", \"#993404\"),\n    name = \"Avg hydropower\\n(normalized)\"\n  ) +\n  scale_fill_gradientn(\n    colours = c(\"#fff7bc\", \"#fee391\", \"#fec44f\", \"#fe9929\", \"#d95f0e\", \"#993404\"),\n    guide = \"none\"\n  ) +\n  scale_y_continuous(limits = c(0, inner_radius + 1.3), breaks = NULL) +\n  labs(\n    title = NULL,\n    subtitle = NULL,\n    x = NULL,\n    y = NULL\n  ) +\n  theme_minimal(base_size = 11) +\n  theme(\n    legend.position = \"right\",\n    axis.text = element_blank(),\n    axis.ticks = element_blank(),\n    panel.grid.minor = element_blank(),\n    panel.grid.major = element_blank()\n  )\n\n\n\n\n\n\n\n\nFigure 1: Hydropower “sun”: months at the core, hours as corona (regional example). Brighter = more generation.\n\n\n\n\n\n\n\n\n\n\nShow code\nlibrary(readxl)\nlibrary(networkD3)\nlibrary(htmlwidgets)\nlibrary(htmltools)\n\nfuture &lt;- read_xlsx(\n  here(\"posts/hydro_infographic/data/FHReD_2015_future_dams_Zarfl_et_al_beta_version/FHReD_2015_future_dams_Zarfl_et_al_beta_version.xlsx\"),\n  sheet = 2\n)\n\ncontinent_mw &lt;- future %&gt;%\n  filter(!is.na(`Capacity (MW)`), !is.na(Continent)) %&gt;%\n  group_by(Continent) %&gt;%\n  summarise(mw = sum(`Capacity (MW)`, na.rm = TRUE), .groups = \"drop\") %&gt;%\n  arrange(desc(mw))\n\nbasin_mw &lt;- future %&gt;%\n  filter(!is.na(`Capacity (MW)`), !is.na(`Major Basin`), !is.na(Continent)) %&gt;%\n  group_by(Continent, `Major Basin`) %&gt;%\n  summarise(mw = sum(`Capacity (MW)`, na.rm = TRUE), .groups = \"drop\")\n\ntop_basins_per_continent &lt;- basin_mw %&gt;%\n  group_by(Continent) %&gt;%\n  slice_max(mw, n = 3) %&gt;%\n  pull(`Major Basin`)\n\nbasin_tab &lt;- basin_mw %&gt;%\n  mutate(\n    basin_group = if_else(\n      `Major Basin` %in% top_basins_per_continent,\n      `Major Basin`,\n      paste0(\"Other (\", Continent, \")\")\n    )\n  ) %&gt;%\n  group_by(Continent, basin_group) %&gt;%\n  summarise(mw = sum(mw), .groups = \"drop\") %&gt;%\n  arrange(Continent, desc(mw))\n\ntrunk_node &lt;- data.frame(name = \"Global hydropower pipeline\")\ncontinent_nodes &lt;- data.frame(name = continent_mw$Continent)\nbasin_nodes &lt;- data.frame(name = unique(basin_tab$basin_group))\n\nnodes &lt;- bind_rows(trunk_node, continent_nodes, basin_nodes)\nnodes$id &lt;- seq_len(nrow(nodes)) - 1\n\nget_id &lt;- function(nm) nodes$id[nodes$name == nm]\n\nlinks_tier1 &lt;- continent_mw %&gt;%\n  mutate(\n    source = get_id(\"Global hydropower pipeline\"),\n    target = purrr::map_int(Continent, get_id),\n    value  = mw\n  ) %&gt;%\n  select(source, target, value)\n\nlinks_tier2 &lt;- basin_tab %&gt;%\n  mutate(\n    source = purrr::map_int(Continent, get_id),\n    target = purrr::map_int(basin_group, get_id),\n    value  = mw\n  ) %&gt;%\n  select(source, target, value)\n\nlinks &lt;- bind_rows(links_tier1, links_tier2) %&gt;%\n  mutate(across(c(source, target), as.integer))\n\nsn &lt;- sankeyNetwork(\n  Links       = as.data.frame(links),\n  Nodes       = as.data.frame(nodes),\n  Source      = \"source\",\n  Target      = \"target\",\n  Value       = \"value\",\n  NodeID      = \"name\",\n  units       = \"MW\",\n  fontSize    = 12,\n  nodeWidth   = 25,\n  nodePadding = 15,\n  sinksRight  = TRUE,\n  width       = 900,\n  height      = 600\n)\n\nsn &lt;- htmlwidgets::onRender(sn, '\n  function(el, x) {\n    d3.select(el).selectAll(\".node rect\")\n      .style(\"fill\", \"black\")\n      .style(\"stroke\", \"none\");\n\n    d3.select(el).selectAll(\".node text\")\n      .style(\"font-family\", \"sans-serif\")\n      .style(\"font-size\", \"11px\")\n      .style(\"fill\", \"black\");\n\n    d3.select(el).selectAll(\".link\")\n      .style(\"stroke\", \"#000\")\n      .style(\"stroke-opacity\", 0.35);\n  }\n')\n\nsn\n\n\n\n\n\n\n\n\nFigure 2: Future hydropower pipeline (FHReD): global trunk → continents → major basins (top 3 per continent). Width = planned capacity (MW).\n\n\n\n\nOther key graphs to be included cover:\n\nHydro must double (IEA NZE)\n**CO(_2) → CH(_4)** pathway shift + decoupling (Soued)\nCarbon intensity risk patterns + share failing 80 kg target (Li & He)\nFuture hydro pipeline by basin/region (FHReD)\nA “river timeline” concept that stitches multiple threads into one narrative"
   },
   {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-217-python-for-environmental-data-science",
-    "href": "posts/my-MEDS-journey/index.html#eds-217-python-for-environmental-data-science",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 217: Python for Environmental Data Science",
-    "text": "EDS 217: Python for Environmental Data Science"
+    "objectID": "posts/hydro_infographic/index.html#design-choices-10-elements",
+    "href": "posts/hydro_infographic/index.html#design-choices-10-elements",
+    "title": "Hydropower’s Next Chapter: Growth, Reservoirs, and Carbon",
+    "section": "",
+    "text": "Graphic formTextThemesColorsTypographyGeneral designContextualizing dataCentering the primary messageAccessibilityDEI lens\n\n\nI mix familiar forms (bubbles, stacked areas, dot/threshold comparisons) with more narrative shapes (the “river timeline”) to guide attention without overwhelming readers.\n\n\nShort titles and direct annotations do most of the work. I’m aiming for “readable at poster distance,” with extra detail pushed into captions.\n\n\nMinimal themes throughout: few gridlines, intentional whitespace, and consistent margins so panels can be assembled cleanly in a layout tool.\n\n\nA consistent palette is defined in final_graphics/style.md. I keep most marks monochrome and use color as an accent when it adds meaning (not decoration).\n\n\nSimple, legible sans-serif choices; consistent hierarchy (title &gt; subtitle &gt; annotation &gt; caption). I avoid dense paragraphs inside plots.\n\n\nI’m prioritizing: visual hierarchy, alignment, and “data-ink” efficiency. Several panels also have “plain/minimal” variants intended as background textures.\n\n\nI will add just enough context to avoid misinterpretation\n\n\nThe narrative is structured as:\n\nNeed (NZE doubling) → tradeoff (reservoir emissions) → variability (CI differs by conditions) → where (future pipeline) → so what (planning lens).\n\n\n\nHigh-contrast designs, readable labels, and clear figure alt text. I also rewrote scientific notation (e.g., “Reservoir area (100,000 km(^2))”) to reduce jargon.\n\n\nFuture dams intersect with people and places. I’m working to avoid “inevitable expansion” framing and instead emphasize decision points (siting, design, governance) and who bears impacts."
   },
   {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-221-scientific-programming-essentials",
-    "href": "posts/my-MEDS-journey/index.html#eds-221-scientific-programming-essentials",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 221: Scientific Programming Essentials",
-    "text": "EDS 221: Scientific Programming Essentials"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-220-working-with-environmental-datasets",
-    "href": "posts/my-MEDS-journey/index.html#eds-220-working-with-environmental-datasets",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 220: Working with Environmental Datasets",
-    "text": "EDS 220: Working with Environmental Datasets"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-222-statistics-for-environmental-data-science",
-    "href": "posts/my-MEDS-journey/index.html#eds-222-statistics-for-environmental-data-science",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 222: Statistics for Environmental Data Science",
-    "text": "EDS 222: Statistics for Environmental Data Science"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-223-geospatial-analysis-and-remote-sensing",
-    "href": "posts/my-MEDS-journey/index.html#eds-223-geospatial-analysis-and-remote-sensing",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 223: Geospatial Analysis and Remote Sensing",
-    "text": "EDS 223: Geospatial Analysis and Remote Sensing"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-242-ethics-and-bias-in-environmental-data-science",
-    "href": "posts/my-MEDS-journey/index.html#eds-242-ethics-and-bias-in-environmental-data-science",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 242: Ethics and Bias in Environmental Data Science",
-    "text": "EDS 242: Ethics and Bias in Environmental Data Science"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-230-modeling-environmental-systems",
-    "href": "posts/my-MEDS-journey/index.html#eds-230-modeling-environmental-systems",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 230: Modeling Environmental Systems",
-    "text": "EDS 230: Modeling Environmental Systems"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-240-data-visualization-and-communication",
-    "href": "posts/my-MEDS-journey/index.html#eds-240-data-visualization-and-communication",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 240: Data Visualization and Communication",
-    "text": "EDS 240: Data Visualization and Communication"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-241-environmental-policy-evaluation",
-    "href": "posts/my-MEDS-journey/index.html#eds-241-environmental-policy-evaluation",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 241: Environmental Policy Evaluation",
-    "text": "EDS 241: Environmental Policy Evaluation"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-411a-capstone-project-part-1",
-    "href": "posts/my-MEDS-journey/index.html#eds-411a-capstone-project-part-1",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 411A: Capstone Project (Part 1)",
-    "text": "EDS 411A: Capstone Project (Part 1)"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-213-databases-and-data-management",
-    "href": "posts/my-MEDS-journey/index.html#eds-213-databases-and-data-management",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 213: Databases and Data Management",
-    "text": "EDS 213: Databases and Data Management"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-232-machine-learning-in-environmental-science",
-    "href": "posts/my-MEDS-journey/index.html#eds-232-machine-learning-in-environmental-science",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 232: Machine Learning in Environmental Science",
-    "text": "EDS 232: Machine Learning in Environmental Science"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-411b-capstone-project-part-2",
-    "href": "posts/my-MEDS-journey/index.html#eds-411b-capstone-project-part-2",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 411B: Capstone Project (Part 2)",
-    "text": "EDS 411B: Capstone Project (Part 2)"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#the-environmental-challenge",
-    "href": "posts/my-MEDS-journey/index.html#the-environmental-challenge",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "The Environmental Challenge",
-    "text": "The Environmental Challenge"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#project-objectives",
-    "href": "posts/my-MEDS-journey/index.html#project-objectives",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "Project Objectives",
-    "text": "Project Objectives"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#the-data-science-approach",
-    "href": "posts/my-MEDS-journey/index.html#the-data-science-approach",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "The Data Science Approach",
-    "text": "The Data Science Approach"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#deliverables",
-    "href": "posts/my-MEDS-journey/index.html#deliverables",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "Deliverables",
-    "text": "Deliverables"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#the-research-context",
-    "href": "posts/my-MEDS-journey/index.html#the-research-context",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "The Research Context",
-    "text": "The Research Context"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#key-insights-and-broader-impact",
-    "href": "posts/my-MEDS-journey/index.html#key-insights-and-broader-impact",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "Key Insights and Broader Impact",
-    "text": "Key Insights and Broader Impact"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#technical-challenges-and-solutions",
-    "href": "posts/my-MEDS-journey/index.html#technical-challenges-and-solutions",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "Technical Challenges and Solutions",
-    "text": "Technical Challenges and Solutions"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#reflection-what-i-learned",
-    "href": "posts/my-MEDS-journey/index.html#reflection-what-i-learned",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "Reflection: What I Learned",
-    "text": "Reflection: What I Learned"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-231-text-and-sentiment-analysis-for-environmental-problems",
-    "href": "posts/my-MEDS-journey/index.html#eds-231-text-and-sentiment-analysis-for-environmental-problems",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 231: Text and Sentiment Analysis for Environmental Problems",
-    "text": "EDS 231: Text and Sentiment Analysis for Environmental Problems"
-  },
-  {
-    "objectID": "posts/my-MEDS-journey/index.html#eds-296-1s-intro-to-shiny---building-reactive-apps-and-dashboards",
-    "href": "posts/my-MEDS-journey/index.html#eds-296-1s-intro-to-shiny---building-reactive-apps-and-dashboards",
-    "title": "My Journey Through MEDS: A Year of Environmental Data Science",
-    "section": "EDS 296-1S: Intro to Shiny - Building Reactive Apps and Dashboards",
-    "text": "EDS 296-1S: Intro to Shiny - Building Reactive Apps and Dashboards"
+    "objectID": "posts/hydro_infographic/index.html#what-this-infographic-argues",
+    "href": "posts/hydro_infographic/index.html#what-this-infographic-argues",
+    "title": "Hydropower’s Next Chapter: Growth, Reservoirs, and Carbon",
+    "section": "",
+    "text": "Hydropower can meaningfully contribute to net zero, but where and how we build the next wave of dams determines whether climate gains come with avoidable social and ecological costs."
   }
 ]
