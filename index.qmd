@@ -1,6 +1,6 @@
 ---
 title: "Lucian Blue Scher"
-description: "Environmental data scientist with the Bren school at UCSB"
+description: "Masters of Environmental Data Scientist (MEDS) student at the Bren school at UCSB"
 image: images/IMG_0567.jpeg
 about: 
   template: jolla
@@ -17,8 +17,10 @@ about:
       target: _blank
     - text: Email
       icon: envelope
-      href: mailto:lucian@ucsb.edu
+      href: mailto:lucianscher@gmail.edu
       target: _blank
 ---
 
-Hello! Welcome to my site, my name is Lucian (pronounced "loo-shin")
+### Data science, communcations and outdoor adventures. 
+
+This website is still under construction.
