@@ -2,13 +2,66 @@
 title: "Writing"
 ---
 
-Welcome to a small library of pieces I’ve written at UC Santa Barbara and beyond. Each title below opens up into the full article or a link to where it’s published.
+Welcome to a small library of pieces I’ve written at UC Santa Barbara and beyond. Each title below expands into the full article or an external link.
+
+::: {.writing-intro}
+These pieces mostly circle the same questions: how people move through changing environments, what stories we tell about risk and care, and where science meets lived experience.
+:::
+
+::: {.writing-grid}
+
+## Published journalism
+
+### In Review: UCSB’s Improvability
+
+<details class="writing-card">
+<summary><strong>Read on The Bottom Line</strong></summary>
+
+[In Review: UCSB’s Improvability](https://thebottomline.as.ucsb.edu/2023/03/in-review-ucsbs-improvability)
+
+</details>
+
+### AB 524: Getting Greeks to Go Genuine
+
+<details class="writing-card">
+<summary><strong>Read on The Bottom Line</strong></summary>
+
+[AB-524: Getting Greeks to Go Genuine](https://thebottomline.as.ucsb.edu/2022/11/ab-524-getting-greeks-to-go-genuine)
+
+</details>
+
+### Del Playa’s Open Space and the History Behind the Patches
+
+<details class="writing-card">
+<summary><strong>Read on The Bottom Line</strong></summary>
+
+[Del Playa’s Open Space and the History Behind the Patches](https://thebottomline.as.ucsb.edu/2022/11/del-playas-open-space-and-the-history-behind-the-patches)
+
+</details>
+
+### Going Sober in Paradise: Gauchos for Recovery Reflect on Narcan and Fentanyl Strips Program
+
+<details class="writing-card">
+<summary><strong>Read on The Bottom Line</strong></summary>
+
+[Going Sober in Paradise: Gauchos for Recovery Reflect on Narcan and Fentanyl Strips Program](https://thebottomline.as.ucsb.edu/2022/11/going-sober-in-paradise-gauchos-for-recovery-reflect-on-narcan-and-fentanyl-strips-program)
+
+</details>
+
+### A New Summer Minor in Media Arts and Design
+
+<details class="writing-card">
+<summary><strong>Read on UCSB Humanities & Fine Arts</strong></summary>
+
+[A New Summer Minor in Media Arts and Design](https://www.hfa.ucsb.edu/news-entries/2023/5/19/diarmid-flatleys-transmodal-beauty-and-artificial-intelligence)
+
+</details>
 
 ## Long-form essays & projects
 
 ### From Black Gold to Blue Haven: How an Oil Platform could become a Beacon of Environmental Change.
 
-<details>
+<details class="writing-card">
 <summary><strong>Read this piece</strong></summary>
 
 From Black Gold to Blue Haven: How an Oil Platform could become a Beacon of Environmental Change.
@@ -79,7 +132,7 @@ Davis, Ryan. Interview. Conducted by Lucian Scher. 3/10/23.
 
 ### Big oil for biodiversity?
 
-<details>
+<details class="writing-card">
 <summary><strong>Read this piece</strong></summary>
 
 Lucian Scher
@@ -136,7 +189,7 @@ Rigs to Reefs. (2024). Api.org. https://www.api.org/oil-and-natural-gas/environm
 
 ### Oh, Mann, it's our fault - Science History Essay
 
-<details>
+<details class="writing-card">
 <summary><strong>Read this piece</strong></summary>
 
 Lucian Scher
@@ -186,50 +239,4 @@ Mann, M. E. (2023, October 25). Beyond The Hockey Stick: What We’re Missing Wh
 
 </details>
 
-## Published journalism
-
-### In Review: UCSB’s Improvability
-
-<details>
-<summary><strong>Read on The Bottom Line</strong></summary>
-
-[In Review: UCSB’s Improvability](https://thebottomline.as.ucsb.edu/2023/03/in-review-ucsbs-improvability)
-
-</details>
-
-### AB 524: Getting Greeks to Go Genuine
-
-<details>
-<summary><strong>Read on The Bottom Line</strong></summary>
-
-[AB-524: Getting Greeks to Go Genuine](https://thebottomline.as.ucsb.edu/2022/11/ab-524-getting-greeks-to-go-genuine)
-
-</details>
-
-### Del Playa’s Open Space and the History Behind the Patches
-
-<details>
-<summary><strong>Read on The Bottom Line</strong></summary>
-
-[Del Playa’s Open Space and the History Behind the Patches](https://thebottomline.as.ucsb.edu/2022/11/del-playas-open-space-and-the-history-behind-the-patches)
-
-</details>
-
-### Going Sober in Paradise: Gauchos for Recovery Reflect on Narcan and Fentanyl Strips Program
-
-<details>
-<summary><strong>Read on The Bottom Line</strong></summary>
-
-[Going Sober in Paradise: Gauchos for Recovery Reflect on Narcan and Fentanyl Strips Program](https://thebottomline.as.ucsb.edu/2022/11/going-sober-in-paradise-gauchos-for-recovery-reflect-on-narcan-and-fentanyl-strips-program)
-
-</details>
-
-### A New Summer Minor in Media Arts and Design
-
-<details>
-<summary><strong>Read on UCSB Humanities & Fine Arts</strong></summary>
-
-[A New Summer Minor in Media Arts and Design](https://www.hfa.ucsb.edu/news-entries/2023/5/19/diarmid-flatleys-transmodal-beauty-and-artificial-intelligence)
-
-</details>
-
+:::
